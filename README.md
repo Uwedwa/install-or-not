@@ -87,7 +87,7 @@ If you'd rather run it from source:
 ```bash
 git clone https://github.com/Uwedwa/install-or-not
 cd install-or-not
-pip install pillow
+pip install -r requirements.txt
 python install_or_not.py
 ```
 
