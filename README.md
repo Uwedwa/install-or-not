@@ -32,7 +32,7 @@
 - [🧠 Smart Engine Fingerprinting](#-smart-engine-fingerprinting)
 - [🎯 Tactical Winget Armory Kits](#-tactical-winget-armory-kits)
 - [🔄 Operational Flowchart](#-operational-flowchart)
-- [🚀 Rapid Deployment (Getting Started)](#-rapid-deployment-getting-started)
+- [🚀 Deployment Options (2 Farklı Kullanım)](#-deployment-options-2-farklı-kullanım-yöntemi)
 - [📦 Compiling Standalone Binary (.exe)](#-compiling-standalone-binary-exe)
 - [📻 TOC Field Directives & Radio Comms](#-toc-field-directives--radio-comms)
 - [📁 Project Architecture](#-project-architecture)
@@ -142,27 +142,47 @@ flowchart TD
 
 ---
 
-## 🚀 Rapid Deployment (Getting Started)
+## 🚀 Deployment Options (2 Farklı Kullanım Yöntemi)
 
-### Prerequisites
+Install or Not 2.0 hem son kullanıcılar ve format sonrası hızlı kurulum yapanlar için **tek parça taşınabilir .exe** olarak, hem de geliştiriciler için **açık kaynak Python scripti** olarak kullanılabilir.
+
+---
+
+### 🟢 Yöntem 1: Hazır Tek Parça (.exe) ile Çalıştırma *(Önerilen & En Pratik)*
+
+> **Not:** Bu yöntemde sisteminizde Python veya herhangi bir ek kütüphane kurulu olması gerekmez.
+
+1. **İndirin:** [**GitHub Releases**](https://github.com/Uwedwa/install-or-not/releases) sekmesinden en güncel `Install_or_Not.exe` dosyasını indirin *(veya yerel ağdaki ortak depolama `\\pornograf\Depolama` alanından temin edin)*.
+2. **Staging Alanı:** `Install_or_Not.exe` dosyasının bulunduğu dizinde `installers` adında bir klasör oluşturun.
+3. **Paketleri Ekleyin:** Kurulmasını istediğiniz tüm `.exe` ve `.msi` kurulum dosyalarını `installers/` klasörünün içine sürükleyip bırakın.
+4. **Çalıştırın:** `Install_or_Not.exe` dosyasına sağ tıklayıp **Yönetici olarak çalıştır** seçeneğiyle operasyonu başlatın.
+5. *(Alternatif)* Elinizde hazır yerel dosya yoksa arayüzdeki **🎯 WINGET ARMORY** sekmesine geçip Steam, Discord, VS Code gibi popüler paketleri tek tıkla kurabilirsiniz.
+
+---
+
+### 🛠️ Yöntem 2: Kaynak Koddan Çalıştırma (Python ile)
+
+Geliştiriciler, kod üzerinde özelleştirme yapmak veya doğrudan terminalden çalıştırmak isteyenler için:
+
+#### Ön Koşullar
 - **Windows 10 / 11**
-- **Python 3.10+** (if running from source)
-- Administrator privileges recommended (to bypass UAC prompts)
+- **Python 3.10+**
+- Yönetici (Administrator) yetkileri
 
-### Clone & Run
+#### Adımlar
 
 ```bash
-# 1. Clone repository
+# 1. Depoyu klonlayın ve klasöre girin
 git clone https://github.com/Uwedwa/install-or-not.git
 cd install-or-not
 
-# 2. Install dependencies (Pillow for embedded icon)
+# 2. Bağımlılıkları yükleyin (Pillow)
 pip install -r requirements.txt
 
-# 3. Drop your .exe or .msi files into installers/
+# 3. Kurulum dosyaları için installers klasörünü oluşturun
 mkdir installers
 
-# 4. Engage deployment suite
+# 4. .exe ve .msi dosyalarınızı installers/ içine attıktan sonra başlatın
 python install_or_not.py
 ```
 
