@@ -1,4 +1,4 @@
-﻿# -*- mode: python ; coding: utf-8 -*-
+# -*- mode: python ; coding: utf-8 -*-
 from PyInstaller.utils.hooks import collect_all
 
 datas = [('ui', 'ui')]
@@ -41,6 +41,7 @@ exe = EXE(
     runtime_tmpdir=None,
     console=False,
     icon='app_icon.ico',
+    uac_admin=True,
     disable_windowed_traceback=False,
     argv_emulation=False,
     target_arch=None,

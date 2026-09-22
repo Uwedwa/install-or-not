@@ -7,8 +7,40 @@
 
 import os
 import sys
+import ctypes
 import webview
 from app_api import TacticalBridge
+
+def is_admin():
+    """Check if the current process has administrative privileges."""
+    try:
+        return ctypes.windll.shell32.IsUserAnAdmin() != 0
+    except Exception:
+        return False
+
+def check_and_elevate():
+    """Automatically prompt for UAC elevation if not running as administrator."""
+    if not is_admin():
+        if hasattr(sys, "_MEIPASS"):
+            # Compiled PyInstaller executable
+            executable = sys.executable
+            params = " ".join([f'"{arg}"' for arg in sys.argv[1:]])
+        else:
+            # Python script execution
+            executable = sys.executable
+            params = f'"{os.path.abspath(__file__)}" ' + " ".join([f'"{arg}"' for arg in sys.argv[1:]])
+
+        try:
+            ret = ctypes.windll.shell32.ShellExecuteW(
+                None, "runas", executable, params, None, 1
+            )
+            if int(ret) > 32:
+                sys.exit(0)
+            else:
+                sys.exit(1)
+        except Exception as e:
+            print(f"Elevation error: {e}")
+            sys.exit(1)
 
 def get_resource_path(relative_path):
     """Get absolute path to resource, works for dev and for PyInstaller bundle."""
@@ -17,6 +49,9 @@ def get_resource_path(relative_path):
     return os.path.join(os.path.abspath(os.path.dirname(__file__)), relative_path)
 
 def create_main_window():
+    # Enforce Administrator privileges
+    check_and_elevate()
+
     ui_dir = get_resource_path("ui")
     index_html = os.path.join(ui_dir, "index.html")
 
