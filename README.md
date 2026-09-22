@@ -1,49 +1,41 @@
 <div align="left" style="position: relative;">
-<img src="https://cdn-icons-png.flaticon.com/512/6295/6295417.png" align="right" width="30%" style="margin: -20px 0 0 20px;">
-<h1>INSTALL-OR-NOT</h1>
+<img src="https://cdn-icons-png.flaticon.com/512/6295/6295417.png" align="right" width="25%" style="margin: -20px 0 0 20px;">
+<h1>INSTALL OR NOT 2.0</h1>
 <p align="left">
-	<em><code>A GUI tool that attempts silent installs, then gracefully falls back to manual if needed.</code></em>
+	<em><code>Tactical Package Deployment Suite — Smart Silent Installer & Armory System</code></em>
 </p>
 <p align="left">
-	<img src="https://img.shields.io/github/license/Uwedwa/install-or-not?style=default&logo=opensourceinitiative&logoColor=white&color=0080ff" alt="license">
-	<img src="https://img.shields.io/github/last-commit/Uwedwa/install-or-not?style=default&logo=git&logoColor=white&color=0080ff" alt="last-commit">
-	<img src="https://img.shields.io/github/languages/top/Uwedwa/install-or-not?style=default&color=0080ff" alt="repo-top-language">
-	<img src="https://img.shields.io/github/languages/count/Uwedwa/install-or-not?style=default&color=0080ff" alt="repo-language-count">
+	<img src="https://img.shields.io/github/license/Uwedwa/install-or-not?style=flat-square&logo=opensourceinitiative&logoColor=white&color=0080ff" alt="license">
+	<img src="https://img.shields.io/badge/version-2.0.0--tactical-3fb950?style=flat-square" alt="version">
+	<img src="https://img.shields.io/badge/platform-Windows%2010%20%7C%2011-58a6ff?style=flat-square&logo=windows" alt="platform">
+	<img src="https://img.shields.io/github/last-commit/Uwedwa/install-or-not?style=flat-square&logo=git&logoColor=white&color=0080ff" alt="last-commit">
 </p>
 </div>
 <br clear="right">
 
 ---
 
-## 🔗 Table of Contents
-
-- [📍 Overview](#-overview)
-- [👾 Features](#-features)
-- [📁 Project Structure](#-project-structure)
-- [🚀 Getting Started](#-getting-started)
-  - [☑️ Prerequisites](#-prerequisites)
-  - [⚙️ Installation](#-installation)
-  - [🤖 Usage](#🤖-usage)
-- [📌 Project Roadmap](#-project-roadmap)
-- [🎗 License](#-license)
-
----
-
 ## 📍 Overview
 
-Install-or-not is a lightweight desktop tool that lets users install multiple programs in a semi-automated way. It attempts to run each executable in the `installers/` folder with silent flags (e.g., `/S`, `/quiet`).  
-If the silent installation fails, it falls back to manual mode by prompting the user to continue the install interactively.
+**INSTALL OR NOT 2.0** is an elite, semi-automated tactical software deployment suite inspired by the atmosphere of *Ready or Not* (SWAT / TOC Communications).
+
+Instead of blindly throwing generic silent flags at executables, **Install or Not 2.0 inspects binary PE headers in real-time** to fingerprint the packaging engine (Inno Setup, NSIS, WiX, InstallShield, 7-Zip, MSI) and deploys each package with its exact tailored silent flags. If an installer refuses silent execution, it gracefully falls back to interactive GUI mode without stalling the deployment queue.
+
+Additionally, it integrates **Winget Tactical Armory Kits** to deploy curated post-format setups (Gaming, Development, Media) in a single click.
 
 ---
 
-## 👾 Features
+## 👾 Features (v2.0 Tactical)
 
-- Automatically detects `.exe` or `.msi` installers
-- Attempts silent installation with smart flags
-- If silent mode fails, switches to manual installer execution
-- Logs each step and displays real-time messages
-- Includes animated feedback and multi-threaded install process
-- GUI built with `tkinter`
+* 🧠 **Smart Engine Fingerprinting:** Inspects binary headers to accurately detect Inno Setup, NSIS, WiX Bootstrapper, InstallShield, 7-Zip SFX, and MSI packages.
+* 🛡️ **Zero-Conflict Silent Flags:** Delivers engine-specific silent arguments (e.g. `/VERYSILENT` for Inno, `/S` for NSIS, `/qn` for MSI) to avoid syntax rejections.
+* 🪄 **Graceful GUI Fallback:** When silent execution returns non-zero, it automatically launches the interactive installer for the operator without breaking the queue.
+* 🎯 **Winget Armory Presets:** Curated 1-click loadouts:
+  * 🎮 **Gaming Vanguard:** Steam, Discord, OBS Studio, 7-Zip, Visual C++ Runtimes All-in-One, DirectX
+  * 💻 **Operator DevKit:** Git, VS Code, Windows Terminal, Python 3.12, Node.js LTS, Docker Desktop
+  * 🌐 **Recon & Daily Ops:** Brave, VLC, Spotify, ShareX, qBittorrent, Notepad++
+* 🗂️ **Tactical Zone Management:** Inspect, filter, select, import, and delete packages directly inside the deployment zone.
+* 📻 **TOC Comms HUD:** Color-coded tactical logging terminal with Ready or Not Entry Team / TOC voice line reporting and audio feedback.
 
 ---
 
@@ -51,10 +43,15 @@ If the silent installation fails, it falls back to manual mode by prompting the 
 
 ```bash
 install-or-not/
-├── install_or_not.py       # Main logic and GUI
-├── installers/             # Put your .exe or .msi files here
-├── LICENSE                 # GPL v3 license
-└── README.md               # You're reading it!
+├── install_or_not.py          # Tactical HUD Application & GUI
+├── core/
+│   ├── detector.py            # Zero-dependency binary PE installer fingerprinting
+│   ├── executor.py            # Multi-threaded execution & GUI fallback engine
+│   └── presets.py             # Winget armory kits & profile export/import
+├── installers/                # Place your .exe and .msi packages here
+├── requirements.txt           # Minimal dependencies (Pillow)
+├── LICENSE                    # GNU GPL v3
+└── README.md
 ```
 
 ---
@@ -62,54 +59,27 @@ install-or-not/
 ## 🚀 Getting Started
 
 ### ☑️ Prerequisites
-
-You do **not** need Python if you are using the precompiled `.exe` version.
-
-If you'd rather run it from source:
-
-- Python 3.10+
-- `Pillow` (used for image/icon support)
-- `tkinter` (usually bundled with Python on Windows)
+- Windows 10 / 11
+- Python 3.10+ (if running from source)
+- `Pillow` (for icon rendering)
 
 ### ⚙️ Installation
 
-#### Precompiled `.exe` (Recommended)
-
-1. Download the latest `.exe` from [Releases](https://github.com/Uwedwa/install-or-not/releases)
-2. Place your `.exe` or `.msi` files into the `installers/` folder.
-3. Run the tool as Administrator:
-   ```bash
-   Install_or_Not.exe
-   ```
-
-#### From Source (For Developers)
-
 ```bash
-git clone https://github.com/Uwedwa/install-or-not
+git clone https://github.com/Uwedwa/install-or-not.git
 cd install-or-not
 pip install -r requirements.txt
 python install_or_not.py
 ```
 
----
+### 📦 Building Standalone Executable (.exe)
 
-### 🤖 Usage
+You can compile **Install or Not** into a single standalone `.exe` using PyInstaller:
 
-1. Add setup files to the `installers/` folder.
-2. Run the app.
-3. Silent installation will be attempted.
-4. If it fails, you'll be prompted for manual install.
-5. Progress and logs will appear in the GUI.
-
----
-
-## 📌 Project Roadmap
-
-- [X] Automatic silent install fallback
-- [X] GUI threading and real-time status
-- [ ] Per-app silent flag customization
-- [ ] Language support (i18n)
-- [ ] Dark mode / Theme selection
+```bash
+pip install pyinstaller
+pyinstaller --noconfirm --onedir --windowed --name "Install_or_Not" install_or_not.py
+```
 
 ---
 
@@ -119,4 +89,4 @@ This project is licensed under the terms of the **GNU GPL v3**. See the [LICENSE
 
 ---
 
-> Made with Python, caffeine, and a hatred for repetitive installs.
+> Made with Python, caffeine, and tactical operational discipline.
