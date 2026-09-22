@@ -42,7 +42,8 @@ from PIL import Image, ImageTk
 
 # Import Core Systems
 from core.detector import analyze_installer, InstallerProfile
-from core.presets import TACTICAL_PRESETS, export_profile, import_profile
+from core.presets import TACTICAL_PRESETS, export_profile, import_profile, export_winget_apps, import_winget_apps
+from core.winget_bootstrap import is_winget_ready, bootstrap_winget_ltsc
 from core.executor import DeploymentTask, execute_installer_task, execute_winget_install
 from core.drivers import backup_drivers, restore_drivers, get_backup_stats
 
@@ -278,53 +279,145 @@ class InstallOrNotApp:
     # TAB 2: WINGET ARMORY
     # -------------------------------------------------------------
     def build_armory_tab(self):
-        # Top: Search Bar
-        search_frame = tk.Frame(self.tab_armory, bg=PANEL_BG, highlightthickness=1, highlightbackground=BORDER_COLOR, pady=10, padx=15)
-        search_frame.pack(fill=tk.X, pady=(10, 15))
+        # 1. Top Bar: Search + LTSC Winget Status
+        top_frame = tk.Frame(self.tab_armory, bg=PANEL_BG, highlightthickness=1, highlightbackground=BORDER_COLOR, pady=8, padx=12)
+        top_frame.pack(fill=tk.X, pady=(10, 10))
 
-        tk.Label(search_frame, text="🔍 RECON SEARCH:", font=("Segoe UI", 10, "bold"), bg=PANEL_BG, fg=ACCENT_BLUE).pack(side=tk.LEFT, padx=(0, 10))
-        self.winget_search_entry = tk.Entry(search_frame, font=("Segoe UI", 11), bg=DARK_BG, fg=TEXT_PRIMARY, insertbackground=TEXT_PRIMARY, relief=tk.FLAT)
-        self.winget_search_entry.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(0, 10))
+        tk.Label(top_frame, text="🔍 RECON SEARCH:", font=("Segoe UI", 9, "bold"), bg=PANEL_BG, fg=ACCENT_BLUE).pack(side=tk.LEFT, padx=(0, 8))
+        self.winget_search_entry = tk.Entry(top_frame, font=("Segoe UI", 10), bg=DARK_BG, fg=TEXT_PRIMARY, insertbackground=TEXT_PRIMARY, relief=tk.FLAT)
+        self.winget_search_entry.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(0, 8))
         self.winget_search_entry.bind("<Return>", lambda e: self.run_winget_search())
 
-        search_btn = TacticalButton(search_frame, text="SEARCH WINGET", variant="accent", command=self.run_winget_search)
-        search_btn.pack(side=tk.LEFT, padx=5)
+        search_btn = TacticalButton(top_frame, text="SEARCH WINGET", variant="accent", command=self.run_winget_search)
+        search_btn.pack(side=tk.LEFT, padx=(0, 10))
 
-        winget_install_btn = TacticalButton(search_frame, text="INSTALL WINGET CLI", variant="normal", command=self.install_winget_cli)
-        winget_install_btn.pack(side=tk.RIGHT, padx=5)
+        # Winget LTSC Detection & Bootstrap Button
+        self.winget_status_btn = TacticalButton(top_frame, text="CHECKING WINGET...", variant="normal", command=self.install_winget_cli)
+        self.winget_status_btn.pack(side=tk.RIGHT)
+        self.update_winget_status_badge()
 
-        # Middle: Presets / Kits
-        presets_title = tk.Label(self.tab_armory, text="TACTICAL ARMORY KITS (CURATED DEPLOYMENT):", font=("Segoe UI", 11, "bold"), bg=DARK_BG, fg=TEXT_PRIMARY)
-        presets_title.pack(anchor=tk.W, pady=(0, 8))
+        # 2. Application Vault Bar (Backup & Restore Installed Apps)
+        vault_frame = tk.Frame(self.tab_armory, bg=PANEL_BG, highlightthickness=1, highlightbackground=BORDER_COLOR, pady=8, padx=12)
+        vault_frame.pack(fill=tk.X, pady=(0, 12))
+
+        v_lbl = tk.Label(vault_frame, text="📦 APPLICATION VAULT:", font=("Segoe UI", 9, "bold"), bg=PANEL_BG, fg=TEXT_PRIMARY)
+        v_lbl.pack(side=tk.LEFT, padx=(0, 10))
+
+        v_desc = tk.Label(vault_frame, text="Export all currently installed machine apps to JSON, or restore them unattended.", font=("Segoe UI", 9), bg=PANEL_BG, fg=TEXT_MUTED)
+        v_desc.pack(side=tk.LEFT)
+
+        btn_import_apps = TacticalButton(vault_frame, text="📥 RESTORE APPS (FROM JSON)", variant="accent", command=self.trigger_import_apps)
+        btn_import_apps.pack(side=tk.RIGHT, padx=(5, 0))
+
+        btn_export_apps = TacticalButton(vault_frame, text="📤 EXPORT INSTALLED APPS (JSON)", variant="primary", command=self.trigger_export_apps)
+        btn_export_apps.pack(side=tk.RIGHT, padx=5)
+
+        # 3. Middle: Presets / Kits
+        presets_title = tk.Label(self.tab_armory, text="TACTICAL ARMORY KITS (CURATED DEPLOYMENT):", font=("Segoe UI", 10, "bold"), bg=DARK_BG, fg=TEXT_PRIMARY)
+        presets_title.pack(anchor=tk.W, pady=(0, 6))
 
         presets_row = tk.Frame(self.tab_armory, bg=DARK_BG)
-        presets_row.pack(fill=tk.X, pady=(0, 15))
+        presets_row.pack(fill=tk.X, pady=(0, 10))
 
         for name, data in TACTICAL_PRESETS.items():
             p_card = tk.Frame(presets_row, bg=PANEL_BG, highlightthickness=1, highlightbackground=BORDER_COLOR, padx=12, pady=10)
-            p_card.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=5)
+            p_card.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=4)
 
             p_title = tk.Label(p_card, text=f"{data['icon']} {name}", font=("Segoe UI", 11, "bold"), bg=PANEL_BG, fg=ACCENT_BLUE)
             p_title.pack(anchor=tk.W)
 
             p_desc = tk.Label(p_card, text=data['description'], font=("Segoe UI", 9), bg=PANEL_BG, fg=TEXT_MUTED, wraplength=260, justify=tk.LEFT)
-            p_desc.pack(anchor=tk.W, pady=(3, 8))
+            p_desc.pack(anchor=tk.W, pady=(2, 6))
 
             pkg_list_str = "\n".join([f"• {p['name']}" for p in data['packages'][:4]])
             if len(data['packages']) > 4:
                 pkg_list_str += f"\n• +{len(data['packages']) - 4} more..."
             p_items = tk.Label(p_card, text=pkg_list_str, font=("Courier New", 9), bg=PANEL_BG, fg=TEXT_PRIMARY, justify=tk.LEFT)
-            p_items.pack(anchor=tk.W, pady=(0, 10))
+            p_items.pack(anchor=tk.W, pady=(0, 8))
 
             btn = TacticalButton(p_card, text=f"DEPLOY {name.upper()}", variant="primary", command=lambda d=data, n=name: self.deploy_armory_preset(n, d))
             btn.pack(fill=tk.X)
 
-        # Bottom: Search Results Area
+        # 4. Bottom: Search / Output Area
         self.armory_results_frame = tk.Frame(self.tab_armory, bg=PANEL_BG, highlightthickness=1, highlightbackground=BORDER_COLOR)
         self.armory_results_frame.pack(fill=tk.BOTH, expand=True)
 
-        self.armory_results_label = tk.Label(self.armory_results_frame, text="Recon search output will appear here.", font=("Courier New", 10), bg=PANEL_BG, fg=TEXT_MUTED)
-        self.armory_results_label.pack(pady=20)
+        self.armory_results_label = tk.Label(self.armory_results_frame, text="Recon search output and operations log will appear here.", font=("Courier New", 10), bg=PANEL_BG, fg=TEXT_MUTED)
+        self.armory_results_label.pack(pady=15)
+
+    def update_winget_status_badge(self):
+        ok, ver = is_winget_ready()
+        if ok:
+            self.winget_status_btn.config(
+                text=f"✔ WINGET READY ({ver})",
+                variant="normal",
+                state=tk.NORMAL
+            )
+        else:
+            self.winget_status_btn.config(
+                text="⚡ INSTALL WINGET (LTSC FIX)",
+                variant="primary",
+                state=tk.NORMAL
+            )
+
+    def trigger_export_apps(self):
+        f = filedialog.asksaveasfilename(
+            title="Export Installed Applications",
+            defaultextension=".json",
+            initialfile="winget-apps-backup.json",
+            filetypes=[("JSON Files", "*.json"), ("All Files", "*.*")]
+        )
+        if not f:
+            return
+
+        self.armory_results_label.config(text=f"Exporting installed applications to: {f}\nPlease wait...")
+        play_tactical_beep(1000, 100)
+
+        def _finish(success, msg, out):
+            def _gui():
+                if success:
+                    play_tactical_beep(1800, 150)
+                    messagebox.showinfo("Export Complete", f"Successfully exported installed applications to:\n{out}")
+                    self.armory_results_label.config(text=f"✔ Application export completed: {out}")
+                else:
+                    play_tactical_beep(600, 200)
+                    messagebox.showerror("Export Failed", msg)
+                    self.armory_results_label.config(text=f"❌ Export failed: {msg}")
+            self.root.after(0, _gui)
+
+        export_winget_apps(f, log_callback=lambda l: self.log(l.strip(), "INFO"), finished_callback=_finish)
+
+    def trigger_import_apps(self):
+        f = filedialog.askopenfilename(
+            title="Select Applications Backup Manifest",
+            filetypes=[("JSON Files", "*.json"), ("All Files", "*.*")]
+        )
+        if not f:
+            return
+
+        confirm = messagebox.askyesno(
+            "Confirm App Restoration",
+            f"Restore and batch install applications from:\n{f}\n\nThis will install missing packages via Winget. Proceed?"
+        )
+        if not confirm:
+            return
+
+        self.armory_results_label.config(text=f"Restoring applications from: {f}\nThis may take several minutes...")
+        play_tactical_beep(1200, 100)
+
+        def _finish(success, msg):
+            def _gui():
+                if success:
+                    play_tactical_beep(1800, 200)
+                    messagebox.showinfo("Restoration Complete", msg)
+                    self.armory_results_label.config(text=f"✔ Restoration complete: {msg}")
+                else:
+                    play_tactical_beep(600, 200)
+                    messagebox.showwarning("Restoration Result", msg)
+                    self.armory_results_label.config(text=f"⚠ Restoration result: {msg}")
+            self.root.after(0, _gui)
+
+        import_winget_apps(f, log_callback=lambda l: self.log(l.strip(), "INFO"), finished_callback=_finish)
 
     # -------------------------------------------------------------
     # TAB 3: PACKAGE MANAGEMENT
@@ -798,20 +891,28 @@ class InstallOrNotApp:
         threading.Thread(target=thread, daemon=True).start()
 
     def install_winget_cli(self):
-        confirm = messagebox.askyesno("Install Winget", "Initiate automated Winget CLI deployment via PowerShell script?")
+        ok, ver = is_winget_ready()
+        prompt_txt = "Winget is already working! Reinstall/repair official Microsoft LTSC bundle?" if ok else "Winget is not detected. Download and install official Microsoft Winget LTSC bundle (VCLibs + UI.Xaml + AppInstaller)?"
+        confirm = messagebox.askyesno("Install / Repair Winget (LTSC)", prompt_txt)
         if not confirm:
             return
-        self.log("Deploying Winget CLI...", "INFO")
-        def t():
-            cmd = ["powershell", "-NoProfile", "-ExecutionPolicy", "Bypass", "-Command",
-                   "Invoke-WebRequest https://raw.githubusercontent.com/asheroto/winget-installer/master/winget-install.ps1 -UseBasicParsing | iex"]
-            p = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-            if p.returncode == 0:
-                self.log("Winget CLI installed successfully. System restart may be required.", "SUCCESS")
-                messagebox.showinfo("Winget Ready", "Winget has been installed! Restart your PC if commands fail.")
-            else:
-                self.log("Winget CLI installation failed: " + p.stderr[:100], "ERROR")
-        threading.Thread(target=t, daemon=True).start()
+
+        self.winget_status_btn.config(state=tk.DISABLED, text="⏳ INSTALLING WINGET...")
+        self.log("Starting native LTSC Winget bootstrapper...", "INFO")
+        play_tactical_beep(1000, 100)
+
+        def _finish(success, msg, v):
+            def _gui():
+                self.update_winget_status_badge()
+                if success:
+                    play_tactical_beep(1800, 200)
+                    messagebox.showinfo("Winget Installation", msg)
+                else:
+                    play_tactical_beep(600, 200)
+                    messagebox.showerror("Winget Installation Failed", msg)
+            self.root.after(0, _gui)
+
+        bootstrap_winget_ltsc(log_callback=lambda l: self.log(l.strip(), "INFO"), finished_callback=_finish)
 
     # -------------------------------------------------------------
     # Management Tab Logic

@@ -29,7 +29,9 @@ Eğer bir yazılım sessiz kuruluma izin vermezse veya hata verirse, uygulama ku
 - **Doğru Sessiz Parametreler:** Her motora yalnızca desteklediği bayrakları iletir (örneğin Inno için `/VERYSILENT`, NSIS için `/S`, WiX için `/quiet`), hatalı parametre kaynaklı çökmeleri önler.
 - **Etkileşimli Arayüz Desteği (Fallback):** Sessiz kurulumun başarısız olduğu durumlarda kurulum penceresini ön planda açarak manuel tamamlamaya olanak tanır.
 - **Sürücü Kasası (Driver Vault):** Format öncesi sistemdeki üçüncü parti OEM sürücüleri (Ekran Kartı, Wi-Fi, Ses, Chipset) tek tıkla yedekler ve yeni sistemde topluca otomatik kurar.
-- **Winget Entegrasyonu:** Yerel dosyanız olmadığında Geliştirici Araçları, Üretkenlik ve Medya gibi popüler yazılım setlerini Windows Paket Yöneticisi üzerinden tek tıkla kurabilir.
+- **Uygulama Kasası (Winget Yedekleme & Geri Yükleme):** Mevcut bilgisayarda kurulu tüm programları tek tıkla taşınabilir bir JSON dosyasına aktarır (`winget export`) ve yeni formatlanan makinede topluca kurar.
+- **LTSC Uyumlu Winget Yükleyicisi:** Microsoft Store bulunmayan temiz Windows 10/11 LTSC ve Enterprise sürümlerinde bile Winget'i bağımsız olarak kurup hazırlayan yerel paket yükleyici (VCLibs, UI.Xaml 2.8 ve AppInstaller paketlerini otomatik entegre eder).
+- **Hazır Cephanelik Paketleri:** Floorp Browser, VS Code, Git, Steam, Discord ve VLC gibi popüler yazılımları içeren tek tıkla kurulabilir hazır setler.
 - **Modern Kullanıcı Arayüzü:** Koyu tema, anlık durum rozetleri (`KUYRUKTA`, `YÜKLENİYOR`, `TAMAMLANDI`, `MANUEL`), ilerleme çubuğu ve canlı terminal çıktısı.
 - **Taşınabilir Tek Dosya (.exe):** Sistemde Python veya harici kütüphane kurulu olmasına gerek kalmadan tek parça `.exe` olarak çalışabilir.
 
@@ -122,11 +124,12 @@ Derlenen dosya `dist/Install_or_Not.exe` dizininde hazır olacaktır.
 install-or-not/
 ├── install_or_not.py    # Ana kullanıcı arayüzü
 ├── core/
-│   ├── __init__.py      # Çekirdek modül tanımı
-│   ├── detector.py      # PE ikili başlık motoru
-│   ├── drivers.py       # Sürücü Kasası (Driver Vault) motoru
-│   ├── executor.py      # Çok iş parçacıklı kuyruk ve fallback motoru
-│   └── presets.py       # Winget hazır paketleri
+│   ├── __init__.py          # Çekirdek modül tanımı
+│   ├── detector.py          # PE ikili başlık motoru
+│   ├── drivers.py           # Sürücü Kasası (Driver Vault) motoru
+│   ├── executor.py          # Çok iş parçacıklı kuyruk ve fallback motoru
+│   ├── presets.py           # Winget profilleri ve uygulama yedekleme/geri yükleme
+│   └── winget_bootstrap.py  # LTSC uyumlu Winget yükleyicisi
 ├── installers/          # Kurulum dosyaları klasörü (otomatik oluşturulur)
 ├── requirements.txt     # Python bağımlılıkları (Pillow)
 ├── LICENSE              # GPL-3.0 lisansı

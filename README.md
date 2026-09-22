@@ -29,7 +29,9 @@ If an installer does not support silent deployment or returns an error, the appl
 - **Accurate Silent Switches:** Applies engine-specific parameters (e.g. `/VERYSILENT` for Inno, `/S` for NSIS, `/quiet` for WiX) to eliminate parameter syntax errors.
 - **Interactive Fallback:** If silent installation fails or requires manual input, gracefully invokes the native setup wizard in the foreground.
 - **Driver Vault (Backup & Restore):** Export installed third-party OEM device drivers (GPU, Wi-Fi, Audio, Chipset) before formatting, and batch-restore them on a fresh system with one click.
-- **Winget Integration:** Built-in curated software bundles (Developer Tools, Productivity Essentials, Gaming & Media) available for 1-click deployment via Windows Package Manager.
+- **Application Vault (Winget Backup & Restore):** Export all currently installed PC applications into a portable JSON manifest (`winget export`) and unattendedly batch-install them on any machine.
+- **LTSC-Ready Winget Bootstrapper:** Built-in automated installer for Microsoft Winget capable of bootstrapping the CLI on clean Windows 10/11 LTSC and Enterprise editions without requiring the Microsoft Store (automatically stages VCLibs, UI.Xaml 2.8, and AppInstaller).
+- **Curated Armory Presets:** 1-click deployment kits (Developer Tools, Productivity Essentials with Floorp Browser, Gaming & Media) powered by Windows Package Manager.
 - **Modern Interface:** Dark-themed UI with real-time status badges (`QUEUED`, `DEPLOYING`, `DONE`, `MANUAL`), progress tracking, and live stdout logging.
 - **Standalone & Portable:** Available as a single standalone executable (`Install_or_Not.exe`) that requires no Python installation or configuration.
 
@@ -122,11 +124,12 @@ The compiled binary will be placed in `dist/Install_or_Not.exe`.
 install-or-not/
 ├── install_or_not.py    # Main GUI application
 ├── core/
-│   ├── __init__.py      # Core package init
-│   ├── detector.py      # Binary PE header detection
-│   ├── drivers.py       # Driver Vault backup & restore engine
-│   ├── executor.py      # Multi-threaded runner & GUI fallback
-│   └── presets.py       # Winget preset packages
+│   ├── __init__.py          # Core package init
+│   ├── detector.py          # Binary PE header detection
+│   ├── drivers.py           # Driver Vault backup & restore engine
+│   ├── executor.py          # Multi-threaded runner & GUI fallback
+│   ├── presets.py           # Winget presets & app backup/restore
+│   └── winget_bootstrap.py  # LTSC-ready Winget bootstrapper
 ├── installers/          # Staging folder for installers (auto-created)
 ├── requirements.txt     # Python dependencies (Pillow)
 ├── LICENSE              # GPL-3.0
