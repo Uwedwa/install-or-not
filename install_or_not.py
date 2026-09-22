@@ -95,17 +95,7 @@ LOADING_SYMBOLS = ["[■□□□□□□□□□]", "[■■□□□□□�
 
 class TacticalButton(tk.Button):
     def __init__(self, master, variant="normal", **kw):
-        bg_col = BTN_BG
-        fg_col = TEXT_PRIMARY
-        if variant == "primary":
-            bg_col = "#238636"
-            fg_col = "#ffffff"
-        elif variant == "danger":
-            bg_col = "#da3633"
-            fg_col = "#ffffff"
-        elif variant == "accent":
-            bg_col = "#1f6feb"
-            fg_col = "#ffffff"
+        bg_col, fg_col = self._get_variant_colors(variant)
 
         kw.setdefault('bg', bg_col)
         kw.setdefault('fg', fg_col)
@@ -125,18 +115,48 @@ class TacticalButton(tk.Button):
         self.bind("<Enter>", self.on_enter)
         self.bind("<Leave>", self.on_leave)
 
+    def _get_variant_colors(self, variant):
+        bg_col = BTN_BG
+        fg_col = TEXT_PRIMARY
+        if variant == "primary":
+            bg_col = "#238636"
+            fg_col = "#ffffff"
+        elif variant == "danger":
+            bg_col = "#da3633"
+            fg_col = "#ffffff"
+        elif variant == "accent":
+            bg_col = "#1f6feb"
+            fg_col = "#ffffff"
+        return bg_col, fg_col
+
+    def set_variant(self, variant):
+        self.variant = variant
+        bg_col, fg_col = self._get_variant_colors(variant)
+        self.default_bg = bg_col
+        self.default_fg = fg_col
+        super().configure(bg=bg_col, fg=fg_col)
+
+    def configure(self, cnf=None, **kw):
+        if "variant" in kw:
+            self.set_variant(kw.pop("variant"))
+        if isinstance(cnf, dict) and "variant" in cnf:
+            self.set_variant(cnf.pop("variant"))
+        return super().configure(cnf, **kw)
+
+    config = configure
+
     def on_enter(self, e):
         if self.variant == "normal":
-            self.config(bg=BTN_HOVER)
+            super().configure(bg=BTN_HOVER)
         elif self.variant == "primary":
-            self.config(bg="#2ea043")
+            super().configure(bg="#2ea043")
         elif self.variant == "danger":
-            self.config(bg="#f85149")
+            super().configure(bg="#f85149")
         elif self.variant == "accent":
-            self.config(bg="#388bfd")
+            super().configure(bg="#388bfd")
 
     def on_leave(self, e):
-        self.config(bg=self.default_bg, fg=self.default_fg)
+        super().configure(bg=self.default_bg, fg=self.default_fg)
 
 
 class InstallOrNotApp:
@@ -348,15 +368,15 @@ class InstallOrNotApp:
     def update_winget_status_badge(self):
         ok, ver = is_winget_ready()
         if ok:
+            self.winget_status_btn.set_variant("normal")
             self.winget_status_btn.config(
                 text=f"✔ WINGET READY ({ver})",
-                variant="normal",
                 state=tk.NORMAL
             )
         else:
+            self.winget_status_btn.set_variant("primary")
             self.winget_status_btn.config(
                 text="⚡ INSTALL WINGET (LTSC FIX)",
-                variant="primary",
                 state=tk.NORMAL
             )
 
