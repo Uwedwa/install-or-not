@@ -28,6 +28,7 @@ Eğer bir yazılım sessiz kuruluma izin vermezse veya hata verirse, uygulama ku
 - **Akıllı Motor Tespiti:** Ek bir bağımlılık olmadan Inno Setup, NSIS, WiX / Burn, InstallShield, 7-Zip SFX, Advanced Installer ve MSI altyapılarını ikili başlık imzalarından tanır.
 - **Doğru Sessiz Parametreler:** Her motora yalnızca desteklediği bayrakları iletir (örneğin Inno için `/VERYSILENT`, NSIS için `/S`, WiX için `/quiet`), hatalı parametre kaynaklı çökmeleri önler.
 - **Etkileşimli Arayüz Desteği (Fallback):** Sessiz kurulumun başarısız olduğu durumlarda kurulum penceresini ön planda açarak manuel tamamlamaya olanak tanır.
+- **Sürücü Kasası (Driver Vault):** Format öncesi sistemdeki üçüncü parti OEM sürücüleri (Ekran Kartı, Wi-Fi, Ses, Chipset) tek tıkla yedekler ve yeni sistemde topluca otomatik kurar.
 - **Winget Entegrasyonu:** Yerel dosyanız olmadığında Geliştirici Araçları, Üretkenlik ve Medya gibi popüler yazılım setlerini Windows Paket Yöneticisi üzerinden tek tıkla kurabilir.
 - **Modern Kullanıcı Arayüzü:** Koyu tema, anlık durum rozetleri (`KUYRUKTA`, `YÜKLENİYOR`, `TAMAMLANDI`, `MANUEL`), ilerleme çubuğu ve canlı terminal çıktısı.
 - **Taşınabilir Tek Dosya (.exe):** Sistemde Python veya harici kütüphane kurulu olmasına gerek kalmadan tek parça `.exe` olarak çalışabilir.
@@ -123,6 +124,7 @@ install-or-not/
 ├── core/
 │   ├── __init__.py      # Çekirdek modül tanımı
 │   ├── detector.py      # PE ikili başlık motoru
+│   ├── drivers.py       # Sürücü Kasası (Driver Vault) motoru
 │   ├── executor.py      # Çok iş parçacıklı kuyruk ve fallback motoru
 │   └── presets.py       # Winget hazır paketleri
 ├── installers/          # Kurulum dosyaları klasörü (otomatik oluşturulur)

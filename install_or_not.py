@@ -44,6 +44,7 @@ from PIL import Image, ImageTk
 from core.detector import analyze_installer, InstallerProfile
 from core.presets import TACTICAL_PRESETS, export_profile, import_profile
 from core.executor import DeploymentTask, execute_installer_task, execute_winget_install
+from core.drivers import backup_drivers, restore_drivers, get_backup_stats
 
 try:
     import winsound
@@ -205,16 +206,19 @@ class InstallOrNotApp:
 
         self.tab_deploy = tk.Frame(self.notebook, bg=DARK_BG)
         self.tab_armory = tk.Frame(self.notebook, bg=DARK_BG)
+        self.tab_drivers = tk.Frame(self.notebook, bg=DARK_BG)
         self.tab_manage = tk.Frame(self.notebook, bg=DARK_BG)
         self.tab_notes = tk.Frame(self.notebook, bg=DARK_BG)
 
         self.notebook.add(self.tab_deploy, text="📦 TACTICAL DEPLOY")
         self.notebook.add(self.tab_armory, text="🎯 WINGET ARMORY")
+        self.notebook.add(self.tab_drivers, text="💾 DRIVER VAULT")
         self.notebook.add(self.tab_manage, text="🗂️ PACKAGE MANAGEMENT")
         self.notebook.add(self.tab_notes, text="📻 TOC COMMS & BRIEFING")
 
         self.build_deploy_tab()
         self.build_armory_tab()
+        self.build_drivers_tab()
         self.build_manage_tab()
         self.build_notes_tab()
 
@@ -325,6 +329,182 @@ class InstallOrNotApp:
     # -------------------------------------------------------------
     # TAB 3: PACKAGE MANAGEMENT
     # -------------------------------------------------------------
+
+    # -------------------------------------------------------------
+    # TAB: DRIVER VAULT
+    # -------------------------------------------------------------
+    def build_drivers_tab(self):
+        container = tk.Frame(self.tab_drivers, bg=DARK_BG, padx=15, pady=15)
+        container.pack(fill=tk.BOTH, expand=True)
+
+        header = tk.Frame(container, bg=PANEL_BG, highlightthickness=1, highlightbackground=BORDER_COLOR, padx=15, pady=12)
+        header.pack(fill=tk.X, pady=(0, 15))
+
+        title = tk.Label(header, text="💾 DRIVER VAULT — Windows Driver Backup & Restore", font=("Segoe UI", 13, "bold"), bg=PANEL_BG, fg=TEXT_PRIMARY)
+        title.pack(anchor="w")
+
+        desc = tk.Label(header, text="Export installed third-party OEM drivers (GPU, Wi-Fi, Audio, Chipset) before formatting, and batch restore them after setup.", font=("Segoe UI", 10), bg=PANEL_BG, fg=TEXT_MUTED)
+        desc.pack(anchor="w", pady=(3, 0))
+
+        actions_grid = tk.Frame(container, bg=DARK_BG)
+        actions_grid.pack(fill=tk.X, pady=(0, 15))
+        actions_grid.columnconfigure(0, weight=1)
+        actions_grid.columnconfigure(1, weight=1)
+
+        # Backup Panel
+        backup_card = tk.LabelFrame(actions_grid, text=" 📤 BACKUP SYSTEM DRIVERS (Format Öncesi) ", font=("Segoe UI", 10, "bold"), bg=PANEL_BG, fg=ACCENT_BLUE, padx=15, pady=12, highlightthickness=1, highlightbackground=BORDER_COLOR)
+        backup_card.grid(row=0, column=0, sticky="nsew", padx=(0, 10))
+
+        b_desc = tk.Label(backup_card, text="Exports all third-party OEM drivers using Windows DISM into a portable backup folder.", wraplength=420, justify="left", font=("Segoe UI", 9), bg=PANEL_BG, fg=TEXT_MUTED)
+        b_desc.pack(anchor="w", pady=(0, 10))
+
+        b_dir_frame = tk.Frame(backup_card, bg=PANEL_BG)
+        b_dir_frame.pack(fill=tk.X, pady=(0, 12))
+
+        self.driver_backup_dir = tk.StringVar(value=os.path.join(os.getcwd(), "drivers_backup"))
+        b_entry = tk.Entry(b_dir_frame, textvariable=self.driver_backup_dir, font=("Segoe UI", 9), bg=DARK_BG, fg=TEXT_PRIMARY, insertbackground="#ffffff", highlightthickness=1, highlightbackground=BORDER_COLOR)
+        b_entry.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(0, 8), ipady=3)
+
+        b_browse = TacticalButton(b_dir_frame, text="Browse...", variant="normal", command=self.browse_driver_backup_dir)
+        b_browse.pack(side=tk.RIGHT)
+
+        self.btn_backup_drivers = TacticalButton(
+            backup_card, text="💾 START DRIVER BACKUP", variant="primary", font=("Segoe UI", 11, "bold"),
+            pady=8, command=self.trigger_driver_backup
+        )
+        self.btn_backup_drivers.pack(fill=tk.X)
+
+        # Restore Panel
+        restore_card = tk.LabelFrame(actions_grid, text=" 📥 RESTORE & INSTALL DRIVERS (Format Sonrası) ", font=("Segoe UI", 10, "bold"), bg=PANEL_BG, fg=ACCENT_GREEN, padx=15, pady=12, highlightthickness=1, highlightbackground=BORDER_COLOR)
+        restore_card.grid(row=0, column=1, sticky="nsew", padx=(10, 0))
+
+        r_desc = tk.Label(restore_card, text="Uses Windows PnP Utility to batch install all .inf drivers from your backup directory.", wraplength=420, justify="left", font=("Segoe UI", 9), bg=PANEL_BG, fg=TEXT_MUTED)
+        r_desc.pack(anchor="w", pady=(0, 10))
+
+        r_dir_frame = tk.Frame(restore_card, bg=PANEL_BG)
+        r_dir_frame.pack(fill=tk.X, pady=(0, 8))
+
+        self.driver_restore_dir = tk.StringVar(value=os.path.join(os.getcwd(), "drivers_backup"))
+        r_entry = tk.Entry(r_dir_frame, textvariable=self.driver_restore_dir, font=("Segoe UI", 9), bg=DARK_BG, fg=TEXT_PRIMARY, insertbackground="#ffffff", highlightthickness=1, highlightbackground=BORDER_COLOR)
+        r_entry.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(0, 8), ipady=3)
+
+        r_browse = TacticalButton(r_dir_frame, text="Browse...", variant="normal", command=self.browse_driver_restore_dir)
+        r_browse.pack(side=tk.RIGHT)
+
+        self.driver_stats_label = tk.Label(restore_card, text="Scanning backup directory...", font=("Segoe UI", 9, "italic"), bg=PANEL_BG, fg=TEXT_MUTED)
+        self.driver_stats_label.pack(anchor="w", pady=(0, 8))
+
+        self.btn_restore_drivers = TacticalButton(
+            restore_card, text="⚡ RESTORE & INSTALL DRIVERS", variant="accent", font=("Segoe UI", 11, "bold"),
+            pady=8, command=self.trigger_driver_restore
+        )
+        self.btn_restore_drivers.pack(fill=tk.X)
+
+        # Terminal Log
+        log_frame = tk.LabelFrame(container, text=" 📻 DRIVER VAULT LIVE TERMINAL ", font=("Segoe UI", 9, "bold"), bg=DARK_BG, fg=TEXT_MUTED, padx=10, pady=8, highlightthickness=1, highlightbackground=BORDER_COLOR)
+        log_frame.pack(fill=tk.BOTH, expand=True)
+
+        self.driver_log_text = tk.Text(log_frame, bg="#0d1117", fg="#c9d1d9", font=("Consolas", 9), insertbackground="#ffffff", relief=tk.FLAT)
+        driver_scroll = ttk.Scrollbar(log_frame, orient="vertical", command=self.driver_log_text.yview)
+        self.driver_log_text.configure(yscrollcommand=driver_scroll.set)
+        driver_scroll.pack(side=tk.RIGHT, fill=tk.Y)
+        self.driver_log_text.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+
+        self.update_driver_stats()
+
+    def browse_driver_backup_dir(self):
+        d = filedialog.askdirectory(title="Select Driver Backup Target Directory", initialdir=self.driver_backup_dir.get())
+        if d:
+            self.driver_backup_dir.set(d)
+
+    def browse_driver_restore_dir(self):
+        d = filedialog.askdirectory(title="Select Driver Backup Source Directory", initialdir=self.driver_restore_dir.get())
+        if d:
+            self.driver_restore_dir.set(d)
+            self.update_driver_stats()
+
+    def update_driver_stats(self):
+        source = self.driver_restore_dir.get()
+        stats = get_backup_stats(source)
+        if stats["exists"] and stats["count"] > 0:
+            self.driver_stats_label.config(
+                text=f"✔ Detected: {stats['count']} driver packages ({stats['size_mb']} MB)",
+                fg=ACCENT_GREEN
+            )
+        else:
+            self.driver_stats_label.config(
+                text="ℹ No driver packages (.inf) found in this folder yet.",
+                fg=TEXT_MUTED
+            )
+
+    def driver_log(self, text: str):
+        def _append():
+            self.driver_log_text.insert(tk.END, text)
+            self.driver_log_text.see(tk.END)
+        self.root.after(0, _append)
+
+    def trigger_driver_backup(self):
+        dest = self.driver_backup_dir.get().strip()
+        if not dest:
+            messagebox.showwarning("Invalid Path", "Please select a target directory.")
+            return
+
+        confirm = messagebox.askyesno(
+            "Confirm Driver Export",
+            f"Export all installed third-party drivers to:\n{dest}\n\nThis may take 1-2 minutes. Proceed?"
+        )
+        if not confirm:
+            return
+
+        self.btn_backup_drivers.config(state=tk.DISABLED, text="⏳ EXPORTING DRIVERS...")
+        self.driver_log(f"\n{'='*60}\n[DRIVER VAULT] INITIATING DRIVER BACKUP OPERATION\n{'='*60}\n")
+        play_tactical_beep(1000, 100)
+
+        def _on_finish(success, msg, stats):
+            def _gui():
+                self.btn_backup_drivers.config(state=tk.NORMAL, text="💾 START DRIVER BACKUP")
+                self.update_driver_stats()
+                if success:
+                    play_tactical_beep(1800, 150)
+                    messagebox.showinfo("Backup Complete", msg)
+                else:
+                    play_tactical_beep(600, 200)
+                    messagebox.showerror("Backup Failed", msg)
+            self.root.after(0, _gui)
+
+        backup_drivers(dest, log_callback=self.driver_log, finished_callback=_on_finish)
+
+    def trigger_driver_restore(self):
+        source = self.driver_restore_dir.get().strip()
+        stats = get_backup_stats(source)
+        if not stats["exists"] or stats["count"] == 0:
+            messagebox.showwarning("No Drivers Found", f"No .inf driver packages found in:\n{source}")
+            return
+
+        confirm = messagebox.askyesno(
+            "Confirm Driver Installation",
+            f"Install {stats['count']} driver packages ({stats['size_mb']} MB) from:\n{source}\n\nProceed with automated driver deployment?"
+        )
+        if not confirm:
+            return
+
+        self.btn_restore_drivers.config(state=tk.DISABLED, text="⏳ INSTALLING DRIVERS...")
+        self.driver_log(f"\n{'='*60}\n[DRIVER VAULT] INITIATING DRIVER RESTORE OPERATION\n{'='*60}\n")
+        play_tactical_beep(1200, 100)
+
+        def _on_finish(success, msg, count):
+            def _gui():
+                self.btn_restore_drivers.config(state=tk.NORMAL, text="⚡ RESTORE & INSTALL DRIVERS")
+                if success:
+                    play_tactical_beep(1800, 200)
+                    messagebox.showinfo("Installation Complete", msg)
+                else:
+                    play_tactical_beep(600, 200)
+                    messagebox.showwarning("Installation Result", msg)
+            self.root.after(0, _gui)
+
+        restore_drivers(source, log_callback=self.driver_log, finished_callback=_on_finish)
+
     def build_manage_tab(self):
         m_top = tk.Frame(self.tab_manage, bg=DARK_BG)
         m_top.pack(fill=tk.X, pady=(10, 10))

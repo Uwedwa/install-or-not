@@ -28,6 +28,7 @@ If an installer does not support silent deployment or returns an error, the appl
 - **Binary PE Header Inspection:** Automatically identifies installer types (Inno Setup, NSIS, WiX / Burn, InstallShield, 7-Zip SFX, Advanced Installer, and MSI) by analyzing file byte signatures without external dependencies.
 - **Accurate Silent Switches:** Applies engine-specific parameters (e.g. `/VERYSILENT` for Inno, `/S` for NSIS, `/quiet` for WiX) to eliminate parameter syntax errors.
 - **Interactive Fallback:** If silent installation fails or requires manual input, gracefully invokes the native setup wizard in the foreground.
+- **Driver Vault (Backup & Restore):** Export installed third-party OEM device drivers (GPU, Wi-Fi, Audio, Chipset) before formatting, and batch-restore them on a fresh system with one click.
 - **Winget Integration:** Built-in curated software bundles (Developer Tools, Productivity Essentials, Gaming & Media) available for 1-click deployment via Windows Package Manager.
 - **Modern Interface:** Dark-themed UI with real-time status badges (`QUEUED`, `DEPLOYING`, `DONE`, `MANUAL`), progress tracking, and live stdout logging.
 - **Standalone & Portable:** Available as a single standalone executable (`Install_or_Not.exe`) that requires no Python installation or configuration.
@@ -123,6 +124,7 @@ install-or-not/
 ├── core/
 │   ├── __init__.py      # Core package init
 │   ├── detector.py      # Binary PE header detection
+│   ├── drivers.py       # Driver Vault backup & restore engine
 │   ├── executor.py      # Multi-threaded runner & GUI fallback
 │   └── presets.py       # Winget preset packages
 ├── installers/          # Staging folder for installers (auto-created)
