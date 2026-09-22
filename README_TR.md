@@ -93,12 +93,15 @@ Kullanıcıyı sıradan kurulum sihirbazlarına tıklamaktan, sessiz parametrele
 
 ---
 
-### 6. Hazır Taktik Cephanelik Setleri
-* **Ne yapar:** Format sonrası en çok ihtiyaç duyulan yazılımları tek tıkla kuran hazır kitler sunar:
-  - **Floorp Browser Kiti:** Ablaze Floorp Browser (gizlilik odaklı, dikey sekmeli ve özelleştirilebilir Firefox çatalı), uBlock Origin ve temel web araçları.
-  - **Geliştirici Kiti:** Visual Studio Code, Git, Python, Windows Terminal, 7-Zip.
-  - **Oyuncu & Medya Kiti:** Steam, Discord, VLC Media Player, Spotify.
-* **Nasıl çalışır:** `core/presets.py` içerisindeki tanımlı paket ID'lerini Winget kuyruğuna alarak katılımsız yükler.
+### 6. Hazır Taktik Cephanelik Setleri (Winget Armory Kits)
+* **Ne yapar:** Format sonrasında en çok ihtiyaç duyulan yazılımları kategorilere ayrılmış hazır cephanelik paketleri halinde tek tıkla kurar:
+  - **🎮 Gaming Vanguard:** Oyun platformları, sesli iletişim, yayın araçları ve zorunlu oyun kütüphaneleri.
+    * *İçerik:* Steam (`Valve.Steam`), Discord (`Discord.Discord`), OBS Studio (`OBSProject.OBSStudio`), 7-Zip (`7zip.7zip`), Visual C++ 2015-2022 Runtimes (`Microsoft.VCRedist.2015+.x64`), DirectX End-User Runtimes (`Microsoft.DirectX`).
+  - **💻 Operator DevKit:** Geliştiriciler ve sistem yöneticileri için temel geliştirme araçları ve çalışma ortamları.
+    * *İçerik:* Git (`Git.Git`), Visual Studio Code (`Microsoft.VisualStudioCode`), Windows Terminal (`Microsoft.WindowsTerminal`), Python 3.12 (`Python.Python.3.12`), Node.js LTS (`OpenJS.NodeJS.LTS`), Docker Desktop (`Docker.DockerDesktop`).
+  - **🌐 Recon & Daily Ops:** Günlük kullanım, gizlilik odaklı internet gezintisi ve medya araçları.
+    * *İçerik:* Floorp Browser (`Ablaze.Floorp`), VLC Media Player (`VideoLAN.VLC`), Spotify (`Spotify.Spotify`), ShareX (`ShareX.ShareX`), qBittorrent (`qBittorrent.qBittorrent`), Notepad++ (`Notepad++.Notepad++`).
+* **Nasıl çalışır:** `core/presets.py` içerisindeki tanımlı paket ID'lerini Winget kuyruğuna alarak katılımsız (`--silent --accept-package-agreements --accept-source-agreements`) yükler ve kurulum sürecini anlık olarak log ekranına yansıtır.
 
 ---
 

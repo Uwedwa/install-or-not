@@ -93,12 +93,15 @@ Instead of navigating repetitive setup wizards, guessing silent CLI switches, or
 
 ---
 
-### 6. Curated Tactical Armory Kits
-* **What it does:** Delivers one-click preset bundles tailored for immediate post-format productivity:
-  - **Floorp Browser Kit:** Ablaze Floorp Browser (privacy-focused, highly customizable Firefox fork), uBlock Origin, and web essentials.
-  - **Developer Kit:** Visual Studio Code, Git, Python, Windows Terminal, 7-Zip.
-  - **Gamer & Media Kit:** Steam, Discord, VLC Media Player, Spotify.
-* **How it works:** Iterates through predefined package arrays in `core/presets.py` and queues unattended Winget deployments with real-time operational feedback.
+### 6. Curated Tactical Armory Kits (Winget Armory Kits)
+* **What it does:** Delivers one-click preset bundles categorized for immediate post-installation productivity:
+  - **🎮 Gaming Vanguard:** Gaming platforms, voice chat, streaming, and runtime dependencies.
+    * *Packages:* Steam (`Valve.Steam`), Discord (`Discord.Discord`), OBS Studio (`OBSProject.OBSStudio`), 7-Zip (`7zip.7zip`), Visual C++ 2015-2022 Runtimes (`Microsoft.VCRedist.2015+.x64`), DirectX End-User Runtimes (`Microsoft.DirectX`).
+  - **💻 Operator DevKit:** Developer workstation essentials, modern runtimes, and containers.
+    * *Packages:* Git (`Git.Git`), Visual Studio Code (`Microsoft.VisualStudioCode`), Windows Terminal (`Microsoft.WindowsTerminal`), Python 3.12 (`Python.Python.3.12`), Node.js LTS (`OpenJS.NodeJS.LTS`), Docker Desktop (`Docker.DockerDesktop`).
+  - **🌐 Recon & Daily Ops:** Privacy browsing, media playback, screenshot utilities, and daily tools.
+    * *Packages:* Floorp Browser (`Ablaze.Floorp`), VLC Media Player (`VideoLAN.VLC`), Spotify (`Spotify.Spotify`), ShareX (`ShareX.ShareX`), qBittorrent (`qBittorrent.qBittorrent`), Notepad++ (`Notepad++.Notepad++`).
+* **How it works:** Iterates through predefined package dictionaries in `core/presets.py` and queues unattended Winget installations (`--silent --accept-package-agreements --accept-source-agreements`) with real-time operational feedback.
 
 ---
 
