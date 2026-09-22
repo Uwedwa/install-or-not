@@ -32,7 +32,7 @@ Eğer bir yazılım sessiz kuruluma izin vermezse veya hata verirse, uygulama ku
 - **Uygulama Kasası (Winget Yedekleme & Geri Yükleme):** Mevcut bilgisayarda kurulu tüm programları tek tıkla taşınabilir bir JSON dosyasına aktarır (`winget export`) ve yeni formatlanan makinede topluca kurar.
 - **LTSC Uyumlu Winget Yükleyicisi:** Microsoft Store bulunmayan temiz Windows 10/11 LTSC ve Enterprise sürümlerinde bile Winget'i bağımsız olarak kurup hazırlayan yerel paket yükleyici (VCLibs, UI.Xaml 2.8 ve AppInstaller paketlerini otomatik entegre eder).
 - **Hazır Cephanelik Paketleri:** Floorp Browser, VS Code, Git, Steam, Discord ve VLC gibi popüler yazılımları içeren tek tıkla kurulabilir hazır setler.
-- **Modern Kullanıcı Arayüzü:** Koyu tema, anlık durum rozetleri (`KUYRUKTA`, `YÜKLENİYOR`, `TAMAMLANDI`, `MANUEL`), ilerleme çubuğu ve canlı terminal çıktısı.
+- **Modern PyWebView Arayüzü:** Edge WebView2 motoruyla çalışan cam efektli (glassmorphism) modern koyu siber tema, anlık durum rozetleri (`KUYRUKTA`, `YÜKLENİYOR`, `TAMAMLANDI`, `MANUEL`), ilerleme çubuğu ve canlı terminal çıktısı.
 - **Taşınabilir Tek Dosya (.exe):** Sistemde Python veya harici kütüphane kurulu olmasına gerek kalmadan tek parça `.exe` olarak çalışabilir.
 
 ---

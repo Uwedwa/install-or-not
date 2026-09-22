@@ -1,0 +1,280 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>INSTALL OR NOT 2.0 — Tactical Deployment Suite</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Top Application Bar -->
+  <header class="app-header">
+    <div class="brand-section">
+      <div class="brand-logo">
+        <svg viewBox="0 0 24 24">
+          <path d="M12 2L1 21h22L12 2zm0 4.2l7.53 13H4.47L12 6.2zM11 10v4h2v-4h-2zm0 6v2h2v-2h-2z"/>
+        </svg>
+      </div>
+      <div class="brand-info">
+        <h1>Install Or Not <span>2.0</span></h1>
+        <p>Tactical Package Deployment Suite // TOC Command</p>
+      </div>
+    </div>
+
+    <div class="header-status-badge">
+      <div class="status-led" id="statusLed"></div>
+      <span id="statusText">ENTRY TEAM READY</span>
+    </div>
+  </header>
+
+  <!-- Navigation Tab Bar -->
+  <nav class="nav-bar">
+    <button class="nav-tab active" data-tab="deploy">
+      <svg viewBox="0 0 24 24"><path d="M13.13 2.81a1 1 0 0 0-1.42 0L2.81 11.71a1 1 0 0 0 0 1.42l8.9 8.9a1 1 0 0 0 1.42 0l8.9-8.9a1 1 0 0 0 0-1.42l-8.9-8.9zM12 5.23L18.77 12 12 18.77 5.23 12 12 5.23z"/></svg>
+      TACTICAL DEPLOY
+    </button>
+    <button class="nav-tab" data-tab="armory">
+      <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm0-14c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6-2.69-6-6-6z"/></svg>
+      WINGET ARMORY
+    </button>
+    <button class="nav-tab" data-tab="drivers">
+      <svg viewBox="0 0 24 24"><path d="M20 13H4c-.55 0-1 .45-1 1v6c0 .55.45 1 1 1h16c.55 0 1-.45 1-1v-6c0-.55-.45-1-1-1zM7 19c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm13-14H4c-.55 0-1 .45-1 1v6c0 .55.45 1 1 1h16c.55 0 1-.45 1-1V6c0-.55-.45-1-1-1zM7 11c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/></svg>
+      DRIVER VAULT
+    </button>
+    <button class="nav-tab" data-tab="manage">
+      <svg viewBox="0 0 24 24"><path d="M20 6h-8l-2-2H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm0 12H4V8h16v10z"/></svg>
+      PACKAGE MANAGER
+    </button>
+    <button class="nav-tab" data-tab="notes">
+      <svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-2 .9-2 2v18l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H5.17L4 17.17V4h16v12z"/></svg>
+      MISSION COMMS
+    </button>
+  </nav>
+
+  <!-- Main Viewport -->
+  <main class="main-viewport">
+
+    <!-- 1. TACTICAL DEPLOY VIEW -->
+    <section class="tab-view active" id="view-deploy">
+      <div class="toolbar">
+        <div class="toolbar-left">
+          <button class="btn btn-primary" id="btnDeployAll" onclick="engageDeployment()">
+            <svg viewBox="0 0 24 24"><path d="M7 2v11h3v9l7-12h-4l4-8z"/></svg>
+            ENGAGE DEPLOYMENT (ALL PACKAGES)
+          </button>
+          <button class="btn" onclick="refreshDeployList()">
+            <svg viewBox="0 0 24 24"><path d="M17.65 6.35A7.958 7.958 0 0 0 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08A5.99 5.99 0 0 1 12 18c-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/></svg>
+            REFRESH ZONE
+          </button>
+        </div>
+        <div class="toolbar-right">
+          <button class="btn" onclick="openInstallersFolder()">
+            <svg viewBox="0 0 24 24"><path d="M19 19H5V5h7V3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7h-2v7zM14 3v2h3.59l-9.83 9.83 1.41 1.41L19 6.41V10h2V3h-7z"/></svg>
+            OPEN INSTALLERS FOLDER
+          </button>
+        </div>
+      </div>
+
+      <div class="progress-container">
+        <div class="progress-header">
+          <span class="progress-status-msg" id="deployProgressMsg">Awaiting operational command...</span>
+          <span class="progress-pct" id="deployProgressPct">0%</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" id="deployProgressFill"></div>
+        </div>
+      </div>
+
+      <div class="cards-list" id="deployCardsList">
+        <!-- Rendered dynamically -->
+      </div>
+    </section>
+
+    <!-- 2. WINGET ARMORY VIEW -->
+    <section class="tab-view" id="view-armory">
+      <!-- Status & App Vault Bar -->
+      <div class="toolbar glass-card" style="margin-bottom: 18px; padding: 12px 18px;">
+        <div class="toolbar-left" style="gap: 12px;">
+          <span style="font-size: 0.82rem; font-weight: 800; color: var(--accent-cyan);">WINGET STATUS:</span>
+          <button class="btn btn-sm" id="btnWingetStatus" onclick="triggerWingetBootstrap()">CHECKING...</button>
+        </div>
+        <div class="toolbar-right">
+          <button class="btn btn-accent" onclick="triggerExportApps()">
+            <svg viewBox="0 0 24 24"><path d="M19 9h-4V3H9v6H5l7 7 7-7zM5 18v2h14v-2H5z"/></svg>
+            EXPORT INSTALLED APPS (JSON)
+          </button>
+          <button class="btn" onclick="triggerImportApps()">
+            <svg viewBox="0 0 24 24"><path d="M9 16h6v-6h4l-7-7-7 7h4zm-4 2h14v2H5z"/></svg>
+            RESTORE APPS (FROM JSON)
+          </button>
+        </div>
+      </div>
+
+      <!-- Curated Presets Grid -->
+      <h3 style="font-size: 0.88rem; font-weight: 800; color: var(--text-main); margin-bottom: 12px; letter-spacing: 0.5px;">
+        TACTICAL ARMORY KITS (CURATED DEPLOYMENT)
+      </h3>
+      <div class="armory-grid" id="armoryPresetsGrid">
+        <!-- Rendered dynamically -->
+      </div>
+
+      <!-- Recon Search -->
+      <div class="glass-card" style="display: flex; flex-direction: column; gap: 12px; flex: 1;">
+        <div style="display: flex; gap: 10px;">
+          <input type="text" class="text-input" id="wingetSearchInput" placeholder="Recon Search Winget Repository (e.g. Floorp, 7zip, Git)..." onkeypress="if(event.key==='Enter') runWingetSearch()">
+          <button class="btn btn-accent" onclick="runWingetSearch()">
+            <svg viewBox="0 0 24 24"><path d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/></svg>
+            SEARCH WINGET
+          </button>
+        </div>
+
+        <div class="terminal-window" id="wingetSearchResults" style="min-height: 140px;">
+          <span style="color: var(--text-muted);">Recon search results and operations output will stream here.</span>
+        </div>
+
+        <div style="display: flex; gap: 10px; align-items: center; border-top: 1px solid var(--border-subtle); padding-top: 10px;">
+          <span style="font-size: 0.8rem; font-weight: 700; color: var(--text-main); white-space: nowrap;">Target Package ID:</span>
+          <input type="text" class="text-input" id="wingetInstallInput" placeholder="e.g. Ablaze.Floorp or 7zip.7zip">
+          <button class="btn btn-primary" onclick="deploySingleWinget()">DEPLOY VIA WINGET</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. DRIVER VAULT VIEW -->
+    <section class="tab-view" id="view-drivers">
+      <div class="glass-card" style="margin-bottom: 16px;">
+        <h3 style="font-size: 1rem; font-weight: 800; color: var(--accent-cyan); margin-bottom: 4px;">
+          💾 DRIVER VAULT — Native Windows Driver Backup & Restore
+        </h3>
+        <p style="font-size: 0.8rem; color: var(--text-muted);">
+          Backup all third-party OEM drivers (GPU, Wi-Fi, Audio, Chipset) before formatting with DISM, and restore unattended with PnPUtil.
+        </p>
+      </div>
+
+      <div class="driver-panels-grid">
+        <!-- Backup Card -->
+        <div class="glass-card driver-panel">
+          <h3 style="color: var(--accent-blue);">
+            <svg viewBox="0 0 24 24" style="width: 18px; height: 18px; fill: currentColor;"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/></svg>
+            BACKUP DRIVERS (Format Öncesi)
+          </h3>
+          <p>Exports all third-party drivers into a portable folder using Windows DISM engine.</p>
+          <div class="path-input-group">
+            <input type="text" class="text-input" id="driverBackupPath">
+            <button class="btn" onclick="browseDriverBackupDir()">Browse...</button>
+          </div>
+          <button class="btn btn-primary" id="btnStartDriverBackup" onclick="triggerDriverBackup()">
+            START DRIVER BACKUP
+          </button>
+        </div>
+
+        <!-- Restore Card -->
+        <div class="glass-card driver-panel">
+          <h3 style="color: var(--accent-green);">
+            <svg viewBox="0 0 24 24" style="width: 18px; height: 18px; fill: currentColor;"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM17 13l-5 5-5-5h3V9h4v4h3z"/></svg>
+            RESTORE DRIVERS (Format Sonrası)
+          </h3>
+          <p>Scans target backup folder and installs all .inf driver packages via PnPUtil.</p>
+          <div class="path-input-group">
+            <input type="text" class="text-input" id="driverRestorePath" onchange="checkDriverStats()">
+            <button class="btn" onclick="browseDriverRestoreDir()">Browse...</button>
+          </div>
+          <div id="driverStatsBadge" style="font-size: 0.78rem; color: var(--text-muted); font-style: italic;">
+            Checking backup directory...
+          </div>
+          <button class="btn btn-accent" id="btnStartDriverRestore" onclick="triggerDriverRestore()">
+            RESTORE & INSTALL DRIVERS
+          </button>
+        </div>
+      </div>
+
+      <!-- Live Driver Terminal -->
+      <div class="glass-card" style="flex: 1; display: flex; flex-direction: column; min-height: 180px;">
+        <h4 style="font-size: 0.8rem; font-weight: 800; color: var(--text-muted); margin-bottom: 8px;">
+          📻 DRIVER VAULT LIVE TERMINAL
+        </h4>
+        <div class="terminal-window" id="driverVaultTerminal">
+          <!-- Live driver log -->
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. PACKAGE MANAGER VIEW -->
+    <section class="tab-view" id="view-manage">
+      <div class="toolbar">
+        <div class="toolbar-left">
+          <button class="btn btn-accent" onclick="importPackagesDialog()">
+            <svg viewBox="0 0 24 24"><path d="M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z"/></svg>
+            IMPORT PACKAGES
+          </button>
+          <button class="btn" onclick="selectAllManage(true)">SELECT ALL</button>
+          <button class="btn" onclick="selectAllManage(false)">DESELECT ALL</button>
+          <button class="btn btn-primary" onclick="deploySelectedManage()">DEPLOY SELECTED</button>
+        </div>
+        <div class="toolbar-right">
+          <button class="btn btn-danger" onclick="deleteSelectedManage()">
+            <svg viewBox="0 0 24 24"><path d="M6 19c0 1.1.9 2 2 2h8c1.1 0 2-.9 2-2V7H6v12zM19 4h-3.5l-1-1h-5l-1 1H5v2h14V4z"/></svg>
+            DELETE SELECTED
+          </button>
+        </div>
+      </div>
+
+      <div class="cards-list" id="manageCardsList">
+        <!-- Checkbox list of packages -->
+      </div>
+    </section>
+
+    <!-- 5. MISSION COMMS & BRIEFING VIEW -->
+    <section class="tab-view" id="view-notes">
+      <div class="split-comms">
+        <div class="glass-card" style="display: flex; flex-direction: column;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+            <h3 style="font-size: 0.9rem; font-weight: 800; color: var(--accent-cyan);">
+              📻 TOC TACTICAL COMMUNICATIONS (LIVE)
+            </h3>
+            <button class="btn btn-sm" onclick="clearLiveTerminal()">CLEAR</button>
+          </div>
+          <div class="terminal-window" id="tocLiveTerminal">
+            <!-- Live TOC Comms -->
+          </div>
+        </div>
+
+        <div class="glass-card" style="display: flex; flex-direction: column;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+            <h3 style="font-size: 0.9rem; font-weight: 800; color: var(--accent-green);">
+              📝 FIELD OPERATOR BRIEFING
+            </h3>
+            <button class="btn btn-success" onclick="saveBriefingNotes()">SAVE NOTES</button>
+          </div>
+          <textarea class="notes-editor" id="briefingNotesArea" placeholder="Enter tactical directives or deployment notes..."></textarea>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Bottom Status Bar -->
+  <footer class="app-footer">
+    <div>v2.0.0-tactical | Smart Engine Fingerprinting (PyWebView)</div>
+    <div>Created by <span style="color: var(--accent-cyan); font-weight: 700;">uwedwa</span> // Ready or Not Ops</div>
+  </footer>
+
+  <!-- Modal Dialog -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal-box">
+      <div class="modal-header" id="modalTitle">CONFIRM OPERATIONAL ORDER</div>
+      <div class="modal-body" id="modalMessage">Are you sure?</div>
+      <div class="modal-actions">
+        <button class="btn" id="modalBtnCancel" onclick="closeModal(false)">CANCEL</button>
+        <button class="btn btn-primary" id="modalBtnConfirm" onclick="closeModal(true)">PROCEED</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notification Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
