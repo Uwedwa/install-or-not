@@ -160,14 +160,12 @@ flowchart TD
 
 > **Zero Dependencies:** Does not require Python or external libraries. Ideal for deployment USB drives and fresh Windows installations.
 
-1. **Acquire Binary:** Download the latest `Install_or_Not.exe` from [**GitHub Releases**](https://github.com/Uwedwa/install-or-not/releases).
-2. **Staging Zone:** In the same folder as `Install_or_Not.exe`, create an `installers` folder:
-   ```cmd
-   mkdir installers
-   ```
-3. **Load Assets:** Drag and drop your `.exe` and `.msi` installers into the `installers/` folder.
-4. **Execute:** Right-click `Install_or_Not.exe` and select **Run as Administrator**.
-5. **Engage:** Click **Engage Deployment** on the Tactical HUD and watch the automated deployment unfold.
+1. **Acquire Binary:** Download `Install_or_Not.exe` from [**GitHub Releases**](https://github.com/Uwedwa/install-or-not/releases).
+2. **Dedicated Folder:** Place `Install_or_Not.exe` inside its own folder (e.g. on your Desktop or a USB deployment drive).
+3. **Execute (Auto-Staging):** Right-click `Install_or_Not.exe` and select **Run as Administrator**. On first launch, the application automatically creates the `installers/` staging folder right next to it.
+4. **Load Assets:** Drag and drop any `.exe` or `.msi` setup packages you want deployed into that `installers/` folder.
+5. **Engage:** Click **Scan / Refresh** on the Tactical HUD to preview the detected packages, then hit **Engage Deployment** to initiate automated rollout.
+*(Alternatively, if you don't have local installers, switch to the **🎯 WINGET ARMORY** tab to deploy curated software kits online with 1 click!)*
 
 ---
 

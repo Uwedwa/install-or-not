@@ -161,13 +161,11 @@ flowchart TD
 > **Sıfır Bağımlılık:** Sistemde Python veya herhangi bir ek paket kurulu olması gerekmez. Format sonrası kullanım ve USB bellekler için idealdir.
 
 1. **İndirin:** [**GitHub Releases**](https://github.com/Uwedwa/install-or-not/releases) sekmesinden en güncel `Install_or_Not.exe` dosyasını temin edin.
-2. **Staging Alanı:** `Install_or_Not.exe` dosyasının bulunduğu dizinde `installers` adında bir klasör oluşturun:
-   ```cmd
-   mkdir installers
-   ```
-3. **Mühimmatı Yükleyin:** Kurmak istediğin tüm `.exe` ve `.msi` kurulum dosyalarını `installers/` klasörünün içine sürükleyip bırakın.
-4. **Çalıştırın:** `Install_or_Not.exe` dosyasına sağ tıklayıp **Yönetici olarak çalıştır** seçeneğini seçin.
-5. **Operasyonu Başlatın:** Taktik arayüz üzerinden **Engage Deployment** butonuna basın ve kurulumu takip edin.
+2. **Bir Klasöre Alın:** `.exe` dosyasını kendine ait bir klasörün içine koyun (örneğin Masaüstünüzde veya USB belleğinizde açacağınız bir klasöre).
+3. **Çalıştırın (Otomatik Klasörleme):** `Install_or_Not.exe` dosyasına sağ tıklayıp **Yönetici olarak çalıştırın**. Program ilk açılışta `installers` klasörünü yanına otomatik olarak oluşturacaktır.
+4. **Mühimmatı Yükleyin:** Kurulmasını istediğiniz tüm `.exe` ve `.msi` kurulum dosyalarını bu oluşan `installers/` klasörünün içine sürükleyip bırakın.
+5. **Operasyonu Başlatın:** Arayüzdeki **Scan / Refresh** butonuna basarak paketleri listeleyin ve **Engage Deployment** ile tek tıkla kurulumu tamamlayın.
+*(Alternatif olarak hiçbir yerel dosyanız yoksa **🎯 WINGET ARMORY** sekmesine geçip popüler program paketlerini internet üzerinden tek tıkla kurabilirsiniz!)*
 
 ---
 
