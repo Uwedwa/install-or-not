@@ -1,236 +1,259 @@
 <div align="center">
 
-# Install or Not 2.0
-### Enterprise Windows Post-Provisioning & Silent Deployment Suite
+```
+  ___           _        _ _                    _   _       _   
+ |_ _|_ __  ___| |_ __ _| | |   ___  _ __      | \ | | ___ | |_ 
+  | || '_ \/ __| __/ _` | | |  / _ \| '__|____ |  \| |/ _ \| __|
+  | || | | \__ \ || (_| | | | | (_) | | |_____|| |\  | (_) | |_ 
+ |___|_| |_|___/\__\__,_|_|_|  \___/|_|        |_| \_|\___/ \__|
+```
 
-[![Platform](https://img.shields.io/badge/Platform-Windows%2010%20%7C%2011%20%7C%20Server-0078D6?style=for-the-badge&logo=windows&logoColor=white)](https://github.com/Uwedwa/install-or-not)
+### Tactical Post-Provisioning & Automated Deployment Suite for Windows
+*Inspired by the gritty operational realism of Ready or Not.*
+
+[![Platform](https://img.shields.io/badge/Platform-Windows%2010%20%7C%2011-0078D6?style=for-the-badge&logo=windows&logoColor=white)](https://github.com/Uwedwa/install-or-not)
 [![Python](https://img.shields.io/badge/Python-3.10+-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/)
+[![Status](https://img.shields.io/badge/TOC-Operational-00ff66?style=for-the-badge&logo=target&logoColor=white)](https://github.com/Uwedwa/install-or-not)
+[![Binary](https://img.shields.io/badge/Armory-Standalone%20x64%20EXE-ffaa00?style=for-the-badge&logo=windows-terminal&logoColor=white)](https://github.com/Uwedwa/install-or-not/releases)
 [![License](https://img.shields.io/badge/License-GPL--3.0-blue.svg?style=for-the-badge)](LICENSE)
-[![Build](https://img.shields.io/badge/Distribution-Standalone%20x64%20Binary-2ea44f?style=for-the-badge&logo=windows-terminal&logoColor=white)](https://github.com/Uwedwa/install-or-not/releases)
 
 <p align="center">
   <b><a href="README.md">English</a></b> • <b><a href="README_TR.md">Türkçe</a></b>
 </p>
 
-<p align="center">
-  A high-performance, resilient post-format orchestration engine designed for IT administrators, system engineers, and enterprise workstations. Automatically inspects binary PE headers, resolves installer packaging engines, and executes unattended, silent software deployments with zero parameter conflicts.
-</p>
+```
+   ______________________________________________________________________
+  /                                                                      \
+ |   [TOC] "Entry team, command center established. Awaiting orders."     |
+ |   [ENTRY TEAM] "High ground secured. Tactical armory ready to engage." |
+  \______________________________________________________________________/
+```
 
 </div>
 
 ---
 
-## 📋 Table of Contents
+## 📑 Mission Directives
 
-- [Executive Summary](#-executive-summary)
-- [Key Architectural Features](#-key-architectural-features)
-- [Installer Engine Identification Matrix](#-installer-engine-identification-matrix)
-- [Curated Deployment Profiles](#-curated-deployment-profiles)
-- [Execution & Workflow Architecture](#-execution--workflow-architecture)
-- [Deployment Modes](#-deployment-modes)
-  - [Mode 1: Standalone Portable Binary (Recommended)](#mode-1-standalone-portable-binary-recommended)
-  - [Mode 2: Source Execution via Python](#mode-2-source-execution-via-python)
-- [Compiling Standalone Binary](#-compiling-standalone-binary)
-- [System Architecture & Codebase](#-system-architecture--codebase)
-- [System Requirements & Security](#-system-requirements--security)
-- [License & Enterprise Compliance](#-license--enterprise-compliance)
-
----
-
-## 💼 Executive Summary
-
-Standardizing and configuring fresh Windows environments across multiple workstations is traditionally a labor-intensive, error-prone task. Technicians frequently grapple with fragmented vendor installers, inconsistent silent switch standards, bundled third-party bloatware, and unexpected setup failures.
-
-**Install or Not 2.0** eliminates deployment bottlenecks by offering an automated, non-invasive provisioning pipeline:
-* **Deep Binary Inspection:** Automatically parses Portable Executable (PE) headers to determine the exact packaging framework (Inno Setup, NSIS, WiX / Burn, InstallShield, 7-Zip SFX, or Microsoft Windows Installer).
-* **Deterministic Parameter Dispatch:** Feeds vendor-tested unattended execution arguments specific to the detected framework, avoiding argument collisions and syntax aborts.
-* **Intelligent Interactive Fallback:** If an installer explicitly rejects silent automation or demands proprietary license inputs, the engine seamlessly invokes the native graphical installer in the foreground. Technicians can complete manual steps without terminating or blocking the remaining deployment queue.
-* **Integrated Package Manager:** Supports direct provisioning through Microsoft Windows Package Manager (`winget`) with curated workstation profiles.
+- [🎯 TOC Mission Briefing](#-toc-mission-briefing)
+- [⚡ What's New in Tactical 2.0](#-whats-new-in-tactical-20)
+- [🧠 PE Binary Ballistics (Smart Detection)](#-pe-binary-ballistics-smart-detection)
+- [🎯 Tactical Winget Armory Kits](#-tactical-winget-armory-kits)
+- [🔄 Standard Operating Procedure (Flowchart)](#-standard-operating-procedure-flowchart)
+- [🚀 Deployment Operations (2 Usage Methods)](#-deployment-operations-2-usage-methods)
+  - [🟢 Method 1: Standalone Single Binary (.exe) (Recommended)](#-method-1-standalone-single-binary-exe-recommended)
+  - [🛠️ Method 2: Running from Source (Python)](#️-method-2-running-from-source-python)
+- [📦 Compiling Field Executable (.exe)](#-compiling-field-executable-exe)
+- [📻 TOC Radio Transmissions](#-toc-radio-transmissions)
+- [📁 Tactical Blueprint (Architecture)](#-tactical-blueprint-architecture)
+- [🎗️ Debrief & Credits](#️-debrief--credits)
 
 ---
 
-## ⚡ Key Architectural Features
+## 🎯 TOC Mission Briefing
 
-| Capability | Legacy Approach | Install or Not 2.0 (Enterprise Engine) |
+Setting up a clean Windows machine shouldn't feel like navigating a hostile minefield of installer wizards, bundled bloatware, and frozen command prompts.
+
+**INSTALL OR NOT 2.0** turns post-format provisioning into an elite, coordinated tactical breach:
+* **Staging Zone:** Drop your `.exe` and `.msi` installers into the `installers/` breach point.
+* **Deep PE Inspection:** The zero-dependency binary scanner inspects portable executable headers to identify whether the target was packed with **Inno Setup, NSIS, WiX / Burn, InstallShield, 7-Zip SFX, Advanced Installer, or Microsoft Installer (MSI)**.
+* **Tailored Silent Strikes:** Dispatches the exact unattended command-line flags required by that specific engine, eliminating parameter conflicts.
+* **Interactive Fallback Protocol:** If an installer resists unattended deployment, the engine gracefully launches the interactive setup window in the foreground so you can clear the objective manually without stalling the mission queue.
+* **Winget Armory On-Demand:** No local files? Switch to the **🎯 WINGET ARMORY** tab to deploy pre-configured loadout kits (Gaming Vanguard, Operator DevKit, Recon) with a single click.
+
+---
+
+## ⚡ What's New in Tactical 2.0
+
+| Operational Capability | Legacy v1.0 | 🚀 Tactical v2.0 |
 | :--- | :--- | :--- |
-| **Engine Detection** | Filename guesswork or blind execution | **Zero-dependency byte-level PE header fingerprinting** |
-| **Parameter Handling** | Concurrently passing conflicting switches (`/S /q /silent`) | **Engine-specific, deterministic argument resolution** |
-| **User Interface** | Unresponsive command consoles | **Modern dark HUD with real-time progress & status badges** |
-| **Failure Recovery** | Process freeze or abrupt script exit | **Asynchronous execution with graceful interactive GUI fallback** |
-| **Cloud Repository** | Manual web navigation and asset downloads | **Curated Winget loadout profiles for 1-click batch installation** |
-| **Task Concurrency** | Blocks caller thread during long setups | **Multi-threaded background queue manager with non-blocking UI** |
-| **Distribution** | Requires target Python environment | **Single-executable standalone distribution (`.exe`)** |
+| **Engine Recon** | None (Blind parameter pass) | **Zero-dependency PE binary header fingerprinting** |
+| **Silent Flag Execution** | Clashing flags (`/S /SILENT /quiet` all at once) | **Engine-tailored argument dispatch** (Zero syntax crashes) |
+| **Tactical HUD** | Basic Tkinter text box | **Cyber Dark HUD**, live status cards & progress tracking |
+| **Status Feedback** | Plain console log | **Visual badges (`QUEUED`, `DEPLOYING`, `✔ SILENT OK`, `🟡 MANUAL GUI`, `❌ FAILED`)** |
+| **Winget Armory** | Simple command run | **Curated 1-Click Loadout Kits** (Gaming, Dev, Recon) |
+| **Queue Resilience** | Script halts on error | **Multi-threaded background queue with timeout protection** |
+| **Audio Comms** | Silent | **Tactical audio milestones via native system frequency beeps** |
+| **Portability** | Python installation required | **Standalone portable binary (`Install_or_Not.exe`)** |
 
 ---
 
-## 🧠 Installer Engine Identification Matrix
+## 🧠 PE Binary Ballistics (Smart Detection)
 
-Installers built on different frameworks crash or exhibit unpredictable behavior when presented with unrecognized command-line switches. **Install or Not 2.0** reads file signatures across both leading and trailing byte streams:
+Different installer frameworks reject foreign switches. **Install or Not 2.0** scans the leading 512 KB and trailing 64 KB of the binary for magic byte signatures and dispatches the exact flags:
 
-| Packaging Engine | Binary Signatures & Byte Patterns | Deterministic Unattended Arguments |
+| Packaging Engine | Target Signature / Byte Pattern | Tailored Silent Arguments |
 | :--- | :--- | :--- |
 | **Inno Setup** | `Inno Setup Setup Data`, `InnoSetup` | `/VERYSILENT /NORESTART /SUPPRESSMSGBOXES /SP-` |
-| **NSIS (Nullsoft)** | `NullsoftInst`, `Nullsoft.NSIS` | `/S` *(Strictly uppercase parameter)* |
+| **NSIS (Nullsoft)** | `NullsoftInst`, `Nullsoft.NSIS` | `/S` *(Strictly uppercase)* |
 | **WiX / Burn** | `WixBurn`, `WixAttachedContainer` | `/quiet /norestart` |
 | **InstallShield** | `InstallShield`, `ISSetup.dll` | `/s /v"/qn /norestart"` |
 | **7-Zip SFX** | `7z\xbc\xaf\x27\x1c`, `7zS.sfx` | `-y` |
 | **Advanced Installer** | `Advanced Installer`, `Caphyon` | `/exenoui /qn /norestart` |
 | **MSI Package** | Windows Installer Compound Container | `msiexec /i <file> /qn /norestart /passive` |
-| **Generic / Unknown** | Unidentified Portable Executable (PE) | Incremental probe with immediate fallback to interactive GUI |
+| **Generic Fallback** | Unknown PE | Gradual safe probe ➔ Automatic GUI Fallback |
 
 ---
 
-## 🎯 Curated Deployment Profiles
+## 🎯 Tactical Winget Armory Kits
 
-In addition to local installer staging, the integrated **Winget Armory** offers curated software kits tailored for professional environments:
+Need rapid loadouts without local setup files? Access the **🎯 WINGET ARMORY** tab to deploy specialized profiles:
 
 ```
-├── 💻 Developer Workstation
+├── 🎮 Gaming Vanguard
+│   ├── Valve Steam
+│   ├── Discord
+│   ├── OBS Studio
+│   ├── 7-Zip
+│   ├── Visual C++ 2015-2022 All-in-One
+│   └── DirectX End-User Runtime
+│
+├── 💻 Operator DevKit
 │   ├── Git for Windows
-│   ├── Microsoft Visual Studio Code
+│   ├── Visual Studio Code
 │   ├── Windows Terminal
-│   ├── Python 3.12 Runtime
+│   ├── Python 3.12
 │   ├── Node.js LTS
 │   └── Docker Desktop
 │
-├── 🏢 Enterprise Productivity & Office
-│   ├── Brave Browser
-│   ├── VLC Media Player
-│   ├── Notepad++
-│   ├── 7-Zip Archive Manager
-│   ├── ShareX Screen Capture
-│   └── Microsoft PowerToys
-│
-└── 🛠️ System Runtimes & Dependencies
-    ├── Microsoft Visual C++ 2015-2022 Redistributable (x86 & x64)
-    ├── Microsoft DirectX End-User Runtime
-    └── Microsoft .NET Desktop Runtime
+└── 🌐 Recon & Daily Ops
+    ├── Brave Browser
+    ├── VLC Media Player
+    ├── Spotify
+    ├── ShareX
+    ├── qBittorrent
+    └── Notepad++
 ```
 
 ---
 
-## 🔄 Execution & Workflow Architecture
+## 🔄 Standard Operating Procedure (Flowchart)
 
 ```mermaid
 flowchart TD
-    Init([Initialize Deployment Engine]) --> ScanDir[Scan installers/ Directory]
-    ScanDir --> QueueCheck{Packages Pending?}
+    Start([Initiate Deployment Protocol]) --> Scan[Scan installers/ Staging Zone]
+    Scan --> CheckQueue{Target in Queue?}
     
-    QueueCheck -- No --> Terminate([Mission Complete: Audited Execution Log])
-    QueueCheck -- Yes --> Dequeue[Fetch Next Binary Asset]
+    CheckQueue -- No --> Debrief([TOC Ping: Mission Accomplished!])
+    CheckQueue -- Yes --> Dequeue[Engage Target Package]
     
-    Dequeue --> ReadHeader[Inspect Binary PE Signature]
-    ReadHeader --> Identify[Resolve Packaging Framework]
-    Identify --> ExecuteSilent[Dispatch Deterministic Unattended Switches]
+    Dequeue --> Inspect[Binary PE Header Fingerprinting]
+    Inspect --> Engine[Identify Framework: Inno, NSIS, WiX, MSI...]
+    Engine --> Silent[Deploy Tailored Silent Switches]
     
-    ExecuteSilent --> Validate{Exit Code 0 or 3010?}
-    Validate -- Success --> MarkOK[Flag: DEPLOYED_SILENT_OK ✔]
-    Validate -- Failed / Rejection --> TriggerGUI[Invoke Interactive Foreground GUI 🟡]
+    Silent --> Validate{Exit Code 0 or 3010?}
+    Validate -- Success --> MarkOK[Badge: SILENT OK ✔]
+    Validate -- Rejection / Error --> Fallback[Launch Foreground GUI Window 🟡]
     
-    TriggerGUI --> AwaitUser[Administrator Completes Setup Interactively]
-    AwaitUser --> MarkManual[Flag: COMPLETED_MANUAL]
+    Fallback --> Manual[User Completes Install Interactively]
+    Manual --> MarkManual[Badge: MANUAL GUI ✔]
     
-    MarkOK --> QueueCheck
-    MarkManual --> QueueCheck
+    MarkOK --> CheckQueue
+    MarkManual --> CheckQueue
 ```
 
 ---
 
-## 🚀 Deployment Modes
+## 🚀 Deployment Operations (2 Usage Methods)
 
-### Mode 1: Standalone Portable Binary (Recommended)
+### 🟢 Method 1: Standalone Single Binary (.exe) (Recommended)
 
-> **Ideal for:** IT field technicians, automated USB provisioning kits, and offline workstations where Python is not pre-installed.
+> **Zero Dependencies:** Does not require Python or external libraries. Ideal for deployment USB drives and fresh Windows installations.
 
-1. **Obtain Asset:** Download the latest `Install_or_Not.exe` binary from [**GitHub Releases**](https://github.com/Uwedwa/install-or-not/releases).
-2. **Create Staging Folder:** In the directory where `Install_or_Not.exe` resides, create a folder named `installers`:
+1. **Acquire Binary:** Download the latest `Install_or_Not.exe` from [**GitHub Releases**](https://github.com/Uwedwa/install-or-not/releases).
+2. **Staging Zone:** In the same folder as `Install_or_Not.exe`, create an `installers` folder:
    ```cmd
    mkdir installers
    ```
-3. **Stage Packages:** Place your `.exe` and `.msi` installers inside the `installers/` directory.
+3. **Load Assets:** Drag and drop your `.exe` and `.msi` installers into the `installers/` folder.
 4. **Execute:** Right-click `Install_or_Not.exe` and select **Run as Administrator**.
-5. **Orchestrate:** The application will index staged binaries, display their detected engines, and initiate unattended deployment with real-time feedback.
+5. **Engage:** Click **Engage Deployment** on the Tactical HUD and watch the automated deployment unfold.
 
 ---
 
-### Mode 2: Source Execution via Python
+### 🛠️ Method 2: Running from Source (Python)
 
-> **Ideal for:** Software engineers, CI/CD runners, and teams looking to extend or customize the core framework.
+> **For Developers:** Ideal for inspecting the codebase, extending detection signatures, or contributing.
 
-#### System Requirements
-* **Operating System:** Windows 10 / 11 / Server 2019+
-* **Python Runtime:** Python 3.10 or higher
-* **Privileges:** Elevated (Administrator) shell recommended
+#### Prerequisites
+- **Windows 10 / 11**
+- **Python 3.10+**
+- Administrator privileges
 
-#### Installation & Launch
+#### Quick Start
 
 ```powershell
-# 1. Clone the repository
+# 1. Clone repository & enter directory
 git clone https://github.com/Uwedwa/install-or-not.git
 cd install-or-not
 
-# 2. Install required dependencies
+# 2. Install UI dependencies (Pillow)
 pip install -r requirements.txt
 
-# 3. Create the staging directory for installers
+# 3. Create installers staging zone
 mkdir installers
 
-# 4. Launch the application
+# 4. Launch Tactical HUD
 python install_or_not.py
 ```
 
 ---
 
-## 📦 Compiling Standalone Binary
+## 📦 Compiling Field Executable (.exe)
 
-To produce an isolated, single-file Windows executable directly from source:
+To forge your own standalone single-file binary with embedded assets:
 
 ```powershell
-# 1. Install PyInstaller build framework
+# 1. Install build tools
 pip install pyinstaller pillow
 
-# 2. Compile into an optimized, windowed single-file executable
+# 2. Compile standalone windowed binary
 python -m PyInstaller --noconfirm --onefile --windowed `
   --name "Install_or_Not" `
   --collect-all core `
   install_or_not.py
 ```
 
-The compiled binary will be placed inside the `dist/Install_or_Not.exe` directory ready for enterprise distribution.
+The completed field binary will be produced in `dist/Install_or_Not.exe`.
 
 ---
 
-## 📁 System Architecture & Codebase
+## 📻 TOC Radio Transmissions
+
+The integrated **TOC Communications HUD** delivers live feedback straight from command operations:
+
+* 🟢 `[SUCCESS]` *"Entry team to TOC, mission complete. All targets secured."*
+* 🟢 `[SUCCESS]` *"High ground secured. All software deployed without casualties."*
+* 🟡 `[WARNING]` *"Silent deployment exited with non-zero code. Initiating interactive GUI fallback..."*
+* 🔴 `[CRITICAL]` *"Hostiles encountered during package deployment! Error reported."*
+
+---
+
+## 📁 Tactical Blueprint (Architecture)
 
 ```
 install-or-not/
-├── install_or_not.py          # Primary GUI Controller & HUD Driver
+├── install_or_not.py          # Tactical HUD Application & GUI Driver
 ├── core/
-│   ├── __init__.py            # Core package descriptor
-│   ├── detector.py            # Zero-dependency binary PE parser & signature resolver
-│   ├── executor.py            # Threaded process runner & interactive fallback dispatcher
-│   └── presets.py             # Winget catalog manager & loadout configurations
-├── installers/                # Default staging zone for staged deployment packages
-├── requirements.txt           # Minimal runtime dependencies (Pillow)
+│   ├── __init__.py            # Core module initialization
+│   ├── detector.py            # Zero-dependency binary PE installer fingerprinting
+│   ├── executor.py            # Multi-threaded execution & GUI fallback engine
+│   └── presets.py             # Winget armory loadouts & profile management
+├── installers/                # Tactical staging zone for .exe and .msi packages
+├── requirements.txt           # Minimal runtime dependencies
 ├── LICENSE                    # GNU General Public License v3.0
-├── README.md                  # Master documentation (English)
-└── README_TR.md               # Kurumsal kullanım kılavuzu (Türkçe)
+├── README.md                  # Tactical Field Manual (English)
+└── README_TR.md               # Taktik Saha El Kitabı (Türkçe)
 ```
 
 ---
 
-## 🔒 System Requirements & Security
+## 🎗️ Debrief & Credits
 
-* **Access Control:** Installing software system-wide requires local administrative privileges (`Run as Administrator`). If executed in standard user mode, installers requiring machine-level registry writes will request elevated UAC elevation.
-* **Integrity:** Binary signature analysis operates via read-only file streams and does not modify the source packages in any way.
-* **Network Independence:** Local installer deployment is fully functional in air-gapped and isolated network environments without internet connectivity. Internet access is only utilized when invoking the optional Microsoft Winget Armory module.
-
----
-
-## 📄 License & Enterprise Compliance
-
-This project is licensed under the terms of the **GNU General Public License v3.0**. Review the [LICENSE](LICENSE) file for complete licensing terms, rights, and restrictions.
+* **Operator:** Built with precision by **[uwedwa](https://github.com/Uwedwa)**.
+* **Atmosphere:** Inspired by the tactical realism and audio design of *Ready or Not* (VOID Interactive).
+* **License:** This project is licensed under the terms of the **GNU General Public License v3.0**. See the [LICENSE](LICENSE) file for details.
 
 <div align="center">
-  <sub>Enterprise Software Deployment Engine • Developed by <a href="https://github.com/Uwedwa">uwedwa</a></sub>
+  <sub>Made with Python, caffeine, and operational discipline. Talk to me, TOC!</sub>
 </div>
