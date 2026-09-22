@@ -132,6 +132,10 @@ install-or-not/
 └── README_TR.md         # Turkish documentation
 ```
 
+## Acknowledgements
+
+The name and visual theme of **Install or Not** were inspired by the tactical shooter [*Ready or Not*](https://store.steampowered.com/app/1144200/Ready_or_Not/) by VOID Interactive.
+
 ---
 
 ## License

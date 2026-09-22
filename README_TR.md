@@ -132,6 +132,10 @@ install-or-not/
 └── README_TR.md         # Türkçe dokümantasyon
 ```
 
+## Esinlenme
+
+**Install or Not** ismi ve görsel atmosferi, VOID Interactive tarafından geliştirilen taktiksel nişancı oyunu [*Ready or Not*](https://store.steampowered.com/app/1144200/Ready_or_Not/)'tan esinlenilerek tasarlanmıştır.
+
 ---
 
 ## Lisans
