@@ -18,7 +18,7 @@
 
 **Install or Not** is a high-performance Windows deployment suite engineered to automate software provisioning, device driver backup/restoration, and application state synchronization after fresh Windows installations.
 
-Instead of navigating repetitive setup wizards, guessing silent CLI switches, or manually reinstalling dozens of utilities, **Install or Not** inspects raw Portable Executable (PE) headers, detects installer engines, injects unattended arguments, backs up OEM hardware drivers, bootstraps Microsoft Winget on clean LTSC systems, and restores complete machine application manifests—all through an ultra-modern glassmorphic desktop interface powered by Microsoft Edge WebView2.
+Instead of navigating repetitive setup wizards, guessing silent CLI switches, or manually reinstalling dozens of utilities, **Install or Not** inspects raw Portable Executable (PE) headers, detects installer engines, injects unattended arguments, backs up OEM hardware drivers, bootstraps Microsoft Winget on clean LTSC systems, and restores complete machine application manifests.
 
 ---
 

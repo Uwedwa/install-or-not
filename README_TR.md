@@ -18,7 +18,7 @@
 
 **Install or Not**, format sonrası veya yeni bir bilgisayar kurulumunda program yükleme süreçlerini, sürücü yedeklemelerini ve uygulama eşitlemesini tamamen otomatikleştiren yüksek performanslı bir Windows dağıtım paketidir.
 
-Kullanıcıyı sıradan kurulum sihirbazlarına tıklamaktan, sessiz parametreleri aramaktan veya format sonrası onlarca programı tek tek kurmaktan kurtarır. İkili PE başlıklarını (PE Headers) analiz eder, paketleyici motoru tanır, uygun parametreleri enjekte eder, OEM donanım sürücülerini yedekler, temiz LTSC sistemlerine tek tıkla Microsoft Winget'i kurar ve kurulu uygulamaları JSON olarak yedekleyip geri yükler — üstelik tüm bunları Microsoft Edge WebView2 destekli cam efektli ultra-modern bir masaüstü arayüzünde sunar.
+Kullanıcıyı sıradan kurulum sihirbazlarına tıklamaktan, sessiz parametreleri aramaktan veya format sonrası onlarca programı tek tek kurmaktan kurtarır. İkili PE başlıklarını (PE Headers) analiz eder, paketleyici motoru tanır, uygun parametreleri enjekte eder, OEM donanım sürücülerini yedekler, temiz LTSC sistemlerine tek tıkla Microsoft Winget'i kurar ve kurulu uygulamaları JSON olarak yedekleyip geri yükler.
 
 ---
 
