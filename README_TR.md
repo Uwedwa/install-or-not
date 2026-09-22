@@ -1,9 +1,5 @@
 # Install or Not
 
-<p align="center">
-  <img src="app_icon.png" width="128" height="128" alt="Install or Not Logo" />
-</p>
-
 > Windows için akıllı, katılımsız kurulum & yazılım dağıtım orkestratörü.
 
 [![Platform](https://img.shields.io/badge/Platform-Windows%2010%20%7C%2011-0078D6?style=flat-square&logo=windows&logoColor=white)](https://github.com/Uwedwa/install-or-not)
