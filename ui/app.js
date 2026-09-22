@@ -1,4 +1,4 @@
-﻿// Tactical Audio Synthesis (Web Audio API)
+// Tactical Audio Synthesis (Web Audio API)
 let audioCtx = null;
 function getAudioContext() {
   if (!audioCtx) {
@@ -655,18 +655,6 @@ async function initMissionComms() {
   const notes = await callApi("load_briefing_notes");
   if (notes) {
     document.getElementById("briefingNotesArea").value = notes;
-  }
-}
-
-async function saveBriefingNotes() {
-  const content = document.getElementById("briefingNotesArea").value;
-  const res = await callApi("save_briefing_notes", content);
-  if (res && res.success) {
-    playSuccessChirp();
-    showToast("Briefing notes saved successfully!", "success");
-  } else {
-    playErrorChirp();
-    showToast("Failed to save notes.", "error");
   }
 }
 

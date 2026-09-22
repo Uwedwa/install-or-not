@@ -1,11 +1,12 @@
-# Install or Not
+﻿# Install or Not
 
-> Windows için otomatik yazılım dağıtım ve format sonrası kurulum aracı.
+> Windows için akıllı, katılımsız kurulum & yazılım dağıtım orkestratörü.
 
 [![Platform](https://img.shields.io/badge/Platform-Windows%2010%20%7C%2011-0078D6?style=flat-square&logo=windows&logoColor=white)](https://github.com/Uwedwa/install-or-not)
 [![Python](https://img.shields.io/badge/Python-3.10+-3776AB?style=flat-square&logo=python&logoColor=white)](https://www.python.org/)
+[![Arayüz Motoru](https://img.shields.io/badge/Aray%C3%BCz-PyWebView%20%7C%20WebView2-00f0ff?style=flat-square)](https://pywebview.flowrl.com/)
 [![Lisans](https://img.shields.io/badge/Lisans-GPL--3.0-blue?style=flat-square)](LICENSE)
-[![Sürüm](https://img.shields.io/badge/S%C3%BCr%C3%BCm-Tek%20Par%C3%A7a%20EXE-green?style=flat-square&logo=windows-terminal&logoColor=white)](https://github.com/Uwedwa/install-or-not/releases)
+[![Sürüm](https://img.shields.io/badge/S%C3%BCr%C3%BCm-Ta%C5%9F%C4%B1nabilir%20x64%20EXE-green?style=flat-square&logo=windows-terminal&logoColor=white)](https://github.com/Uwedwa/install-or-not/releases)
 
 <p align="left">
   <b><a href="README.md">English</a></b> • <b><a href="README_TR.md">Türkçe</a></b>
@@ -15,25 +16,106 @@
 
 ## Genel Bakış
 
-**Install or Not**, bilgisayara format atıldıktan veya yeni bir Windows sistemi kurulduktan sonra gerekli yazılımların kurulum sürecini otomatikleştiren pratik bir dağıtım aracıdır.
+**Install or Not**, format sonrası veya yeni bir bilgisayar kurulumunda program yükleme süreçlerini, sürücü yedeklemelerini ve uygulama eşitlemesini tamamen otomatikleştiren yüksek performanslı bir Windows dağıtım paketidir.
 
-Kurulum sihirbazlarında sürekli "İleri" butonlarına tıklamak veya her programın sessiz kurulum parametrelerini ayrı ayrı aramak yerine; **Install or Not**, `.exe` ve `.msi` dosyalarının PE (Portable Executable) başlıklarını bayt seviyesinde inceler, paketleme motorunu tespit eder ve uygun sessiz kurulum argümanlarıyla otomatik olarak çalıştırır.
-
-Eğer bir yazılım sessiz kuruluma izin vermezse veya hata verirse, uygulama kurulum penceresini ön planda normal bir şekilde açar. Böylece kurulumu elle tamamlayabilir ve kuyrukta bekleyen diğer programların aksamadan devam etmesini sağlayabilirsiniz.
+Kullanıcıyı sıradan kurulum sihirbazlarına tıklamaktan, sessiz parametreleri aramaktan veya format sonrası onlarca programı tek tek kurmaktan kurtarır. İkili PE başlıklarını (PE Headers) analiz eder, paketleyici motoru tanır, uygun parametreleri enjekte eder, OEM donanım sürücülerini yedekler, temiz LTSC sistemlerine tek tıkla Microsoft Winget'i kurar ve kurulu uygulamaları JSON olarak yedekleyip geri yükler — üstelik tüm bunları Microsoft Edge WebView2 destekli cam efektli ultra-modern bir masaüstü arayüzünde sunar.
 
 ---
 
-## Öne Çıkan Özellikler
+## Detaylı Özellikler ve Nasıl Çalıştıkları
 
-- **Akıllı Motor Tespiti:** Ek bir bağımlılık olmadan Inno Setup, NSIS, WiX / Burn, InstallShield, 7-Zip SFX, Advanced Installer ve MSI altyapılarını ikili başlık imzalarından tanır.
-- **Doğru Sessiz Parametreler:** Her motora yalnızca desteklediği bayrakları iletir (örneğin Inno için `/VERYSILENT`, NSIS için `/S`, WiX için `/quiet`), hatalı parametre kaynaklı çökmeleri önler.
-- **Etkileşimli Arayüz Desteği (Fallback):** Sessiz kurulumun başarısız olduğu durumlarda kurulum penceresini ön planda açarak manuel tamamlamaya olanak tanır.
-- **Sürücü Kasası (Driver Vault):** Format öncesi sistemdeki üçüncü parti OEM sürücüleri (Ekran Kartı, Wi-Fi, Ses, Chipset) tek tıkla yedekler ve yeni sistemde topluca otomatik kurar.
-- **Uygulama Kasası (Winget Yedekleme & Geri Yükleme):** Mevcut bilgisayarda kurulu tüm programları tek tıkla taşınabilir bir JSON dosyasına aktarır (`winget export`) ve yeni formatlanan makinede topluca kurar.
-- **LTSC Uyumlu Winget Yükleyicisi:** Microsoft Store bulunmayan temiz Windows 10/11 LTSC ve Enterprise sürümlerinde bile Winget'i bağımsız olarak kurup hazırlayan yerel paket yükleyici (VCLibs, UI.Xaml 2.8 ve AppInstaller paketlerini otomatik entegre eder).
-- **Hazır Cephanelik Paketleri:** Floorp Browser, VS Code, Git, Steam, Discord ve VLC gibi popüler yazılımları içeren tek tıkla kurulabilir hazır setler.
-- **Modern PyWebView Arayüzü:** Edge WebView2 motoruyla çalışan cam efektli (glassmorphism) modern koyu siber tema, anlık durum rozetleri (`KUYRUKTA`, `YÜKLENİYOR`, `TAMAMLANDI`, `MANUEL`), ilerleme çubuğu ve canlı terminal çıktısı.
-- **Taşınabilir Tek Dosya (.exe):** Sistemde Python veya harici kütüphane kurulu olmasına gerek kalmadan tek parça `.exe` olarak çalışabilir.
+### 1. Akıllı PE Başlık Tespiti ve Motor Parmak İzi (PE Header Inspection)
+* **Ne yapar:** `installers/` dizinine bırakılan herhangi bir `.exe` veya `.msi` dosyasını çalıştırmadan, dosyanın bayt yapısını tarayarak paketleme motorunu otomatik tespit eder.
+* **Nasıl çalışır:**
+  1. Dosyayı salt okunur ikili modda açar (`open(f, "rb")`).
+  2. DOS ve PE başlıklarını (`IMAGE_DOS_HEADER`, `IMAGE_NT_HEADERS`) inceler.
+  3. Bilinen sihirli baytları (magic bytes), bölüm adlarını ve imza dizgilerini arar:
+     - **Inno Setup:** `Inno Setup Setup Data` veya `InnoSetup`.
+     - **NSIS (Nullsoft):** `NullsoftInst` veya `Nullsoft.NSIS`.
+     - **WiX Toolset / Burn:** `WixBurn` veya `WixAttachedContainer`.
+     - **InstallShield:** `InstallShield` veya `ISSetup.dll`.
+     - **7-Zip SFX:** `7z\xbc\xaf\x27\x1c` veya `7zS.sfx`.
+     - **Advanced Installer:** `Advanced Installer` veya `Caphyon`.
+     - **Microsoft MSI:** OLE Bileşik Belge başlığı (`\xd0\xcf\x11\xe0\xa1\xb1\x1a\xe1`).
+  4. Motor adını, güvenilirlik oranını ve enjekte edilecek sessiz kurulum parametrelerini içeren bir `InstallerProfile` nesnesi döndürür.
+
+---
+
+### 2. Çok İş Parçacıklı Katılımsız Kurulum ve Otomatik GUI Güvenlik Ağı (Fallback)
+* **Ne yapar:** Kurulumları arka planda sırayla ve sessizce çalıştırır. Eğer bir kurulum sessiz parametreleri desteklemezse ya da hata verirse tüm kuyruğun kilitlenmesini önler.
+* **Nasıl çalışır:**
+  1. Arka planda `subprocess.Popen` ile penceresiz (`CREATE_NO_WINDOW`) bir iş parçacığı başlatır.
+  2. Tespit edilen motora göre optimize edilmiş parametreleri enjekte eder (Inno için `/VERYSILENT /NORESTART /SUPPRESSMSGBOXES /SP-`, NSIS için `/S`, WiX için `/quiet /norestart` vb.).
+  3. Çıkış kodunu inceler. Çıkış kodu `0` (veya yeniden başlatma bekleyen `3010`) ise görev `✔ SILENT OK` olarak işaretlenir.
+  4. **Otomatik Güvenlik Ağı (Fallback):** Eğer kurulum sıfırdan farklı bir hata koduyla sonlanırsa veya sessiz bayrakları tanımazsa, uygulama derhal kurulumu normal etkileşimli grafik penceresinde (`SW_SHOWNORMAL`) ön plana açar. Kullanıcı adımları tamamlayıp pencereyi kapattığında kuyruk kaldığı yerden sıradaki pakete devam eder.
+
+---
+
+### 3. Sürücü Kasası (Driver Vault): Yerel Sürücü Yedekleme & Geri Yükleme
+* **Ne yapar:** Format atmadan önce sistemdeki tüm 3. parti OEM donanım sürücülerini (Ekran Kartı, Wi-Fi, Ethernet, Bluetooth, Ses, Anakart/Chipset) tek tıkla taşınabilir bir klasöre yedekler; format sonrasında internete ihtiyaç duymadan tek tıkla kurar.
+* **Nasıl çalışır:**
+  * **Yedekleme (Format Öncesi):**
+    - Windows'un yerel Dağıtım Görüntüsü Bakımı ve Yönetimi (`DISM.exe`) aracını çalıştırır:
+      ```powershell
+      dism /online /export-driver /destination:<hedef_klasor>
+      ```
+    - Windows'un yerleşik sürücülerini atlayarak yalnızca üreticilerin harici OEM sürücü paketlerini (`oem*.inf`) ayıklar. Bu sayede yedek hafif ve taşınabilir kalır.
+  * **Geri Yükleme (Format Sonrası):**
+    - Hedef klasörü tarar ve Windows Tak ve Kullan Yardımcı Programı (`pnputil.exe`) ile toplu kurulum yapar:
+      ```powershell
+      pnputil /add-driver <kaynak_klasor>\*.inf /subdirs /install
+      ```
+    - Klasördeki tüm `.inf` paketlerini Windows sürücü deposuna ekleyip donanımlara otomatik bağlar.
+  * **Canlı Çıktı:** DISM ve PnPUtil çıktısı Driver Vault Live Terminal penceresinde anlık olarak akar.
+
+---
+
+### 4. Winget Cephaneliği & Yerel LTSC Bootstrapper
+* **Ne yapar:** Windows Paket Yöneticisi (`winget`) üzerinden binlerce programa tek tıkla erişim sağlar. Microsoft Store bulunmayan temiz Windows 10/11 LTSC ve Enterprise sürümlerinde bile Winget'i tek tıkla kurabilir.
+* **Nasıl çalışır:**
+  * **LTSC Bootstrapper:**
+    - Sistemde `winget.exe` olup olmadığını kontrol eder. Yoksa Microsoft'un resmi imzalı AppX/MSIX paketlerini otomatik indirir:
+      1. `Microsoft.VCLibs.x64.14.00.Desktop.appx` (Visual C++ Runtime)
+      2. `Microsoft.UI.Xaml.2.8.x64.appx` (WinUI 2.8 Framework)
+      3. `Microsoft.DesktopAppInstaller_8wekyb3d8bbwe.msixbundle` (Resmi Winget İstemcisi)
+    - PowerShell'in `Add-AppxPackage` komutuyla arka planda sisteme kaydeder. Microsoft Hesabı veya Mağaza olmadan Winget'i tam çalışır hale getirir.
+  * **Paket Keşfi & Kurulum:**
+    - `winget search <sorgu> --source winget` komutuyla arama yapar.
+    - `winget install --id <ID> -e --silent --accept-package-agreements --accept-source-agreements` ile arka planda sessiz kurulum gerçekleştirir.
+
+---
+
+### 5. Uygulama Kasası (Application Vault): Kurulu Programları Eşitleme
+* **Ne yapar:** Mevcut bilgisayardaki tüm kurulu programların listesini taşınabilir bir JSON dosyasına yedekler; formatlanan yeni bilgisayarda bu listeyi okuyarak tüm programları topluca indirip kurar.
+* **Nasıl çalışır:**
+  * **Dışa Aktarma (Export):** `winget export -o <dosya.json> --include-versions --accept-source-agreements` komutu ile kurulu programların ID, kaynak ve sürüm manifestosunu oluşturur.
+  * **İçe Aktarma / Geri Yükleme (Import):** `winget import -i <dosya.json> --ignore-unavailable --accept-package-agreements --accept-source-agreements` komutu ile manifestodaki eksik programları sırayla sisteme kurar.
+
+---
+
+### 6. Hazır Taktik Cephanelik Setleri (Varsayılan: Floorp Browser)
+* **Ne yapar:** Format sonrası en çok ihtiyaç duyulan yazılımları tek tıkla kuran hazır kitler sunar:
+  - **Floorp Browser Kiti:** Ablaze Floorp Browser (gizlilik odaklı, dikey sekmeli ve özelleştirilebilir Firefox çatalı), uBlock Origin ve temel web araçları.
+  - **Geliştirici Kiti:** Visual Studio Code, Git, Python, Windows Terminal, 7-Zip.
+  - **Oyuncu & Medya Kiti:** Steam, Discord, VLC Media Player, Spotify.
+* **Nasıl çalışır:** `core/presets.py` içerisindeki tanımlı paket ID'lerini Winget kuyruğuna alarak katılımsız yükler.
+
+---
+
+### 7. Paket Yönetim Merkezi (Package Manager)
+* **Ne yapar:** `installers/` klasöründeki yerel kurulum dosyalarını yönetir.
+* **Nasıl çalışır:** Windows Gezgini dosya seçicisi ile yeni `.exe` ve `.msi` dosyalarını içe aktarabilir, onay kutuları ile istenen programları seçip sadece onları kurabilir veya gereksiz dosyaları silebilir.
+
+---
+
+### 8. Ultra-Modern PyWebView Kullanıcı Arayüzü
+* **Ne yapar:** Koyu siber/taktiksel cam temalı, akıcı ve modern bir masaüstü deneyimi sunar.
+* **Nasıl çalışır:**
+  - **PyWebView 6.x** ve yerel **Microsoft Edge WebView2** motoru üzerinde çalışır.
+  - İki yönlü asenkron Python-JavaScript köprüsü (`TacticalBridge`) üzerinden haberleşir.
+  - Web Audio API ile sentetik taktiksel ses efektleri (tıklama, onay ve uyarı sesleri) üretir.
+  - Mission Comms ve Driver Vault terminallerinde renk kodlu canlı operasyon logları sunar.
+  - Harekat notlarını (Field Operator Briefing) salt okunur taktiksel yönergeler olarak gösterir.
 
 ---
 
@@ -52,44 +134,72 @@ Eğer bir yazılım sessiz kuruluma izin vermezse veya hata verirse, uygulama ku
 
 ---
 
-## Çalışma Mantığı
+## Mimari Şeması
 
 ```mermaid
-flowchart LR
-    A[Kurulum Dosyaları] --> B[PE Başlık Analizi]
-    B --> C[Motoru Belirle]
-    C --> D[Sessiz Kurulumu Başlat]
-    D --> E{Çıkış Kodu Başarılı mı?}
-    E -- Evet --> F[Sıradaki Pakete Geç]
-    E -- Hayır --> G[Normal Kurulum Penceresini Aç]
-    G --> F
+graph TD
+    subgraph UI [Modern Masaüstü HUD - PyWebView / WebView2]
+        T1[Deploy Zone]
+        T2[Winget Armory & Presets]
+        T3[Driver Vault]
+        T4[Package Manager]
+        T5[Mission Comms & Briefing]
+    end
+
+    subgraph Bridge [Çift Yönlü Python-JS API Köprüsü]
+        API[TacticalBridge - app_api.py]
+    end
+
+    subgraph Core [Python 3 Çekirdek Motorları]
+        DET[core/detector.py - PE İkili Başlık Analizi]
+        EXE[core/executor.py - Çok İş Parçacıklı Kurulum & Fallback]
+        DRV[core/drivers.py - DISM & PnPUtil Motoru]
+        WGT[core/winget_bootstrap.py - LTSC AppInstaller Bootstrapper]
+        PRE[core/presets.py - Winget Kitleri & App Vault]
+    end
+
+    subgraph OS [Windows Alt Sistemi]
+        DISM[DISM.exe]
+        PNP[PnPUtil.exe]
+        WINGET[Winget.exe]
+        PROC[Kurulum Alt Süreçleri]
+    end
+
+    UI <-->|window.pywebview.api| API
+    API --> DET
+    API --> EXE
+    API --> DRV
+    API --> WGT
+    API --> PRE
+
+    DRV --> DISM
+    DRV --> PNP
+    WGT --> WINGET
+    PRE --> WINGET
+    EXE --> PROC
 ```
 
 ---
 
 ## Kurulum ve Kullanım
 
-### Yöntem 1: Hazır Tek Parça (.exe) ile Çalıştırma (Önerilen)
+### Yöntem 1: Bağımsız Taşınabilir .EXE (Önerilen)
+> Sistemde Python veya harici kütüphane kurulu olması gerekmez.
 
-> Python veya ek bağımlılık gerektirmez.
-
-1. [**Releases**](https://github.com/Uwedwa/install-or-not/releases) sayfasından en güncel **`Install_or_Not.exe`** dosyasını indirin.
-2. Dosyayı kendine ait bir klasörün içine koyun (örneğin Masaüstünüzde veya USB belleğinizde bir klasöre).
-3. `Install_or_Not.exe` dosyasına sağ tıklayıp **Yönetici olarak çalıştırın**.
-   * *Program ilk açılışta yanına `installers/` klasörünü otomatik olarak oluşturacaktır.*
-4. Kurmak istediğiniz `.exe` ve `.msi` dosyalarını oluşan bu `installers/` klasörüne atın.
-5. Arayüzdeki **Scan / Refresh** butonuna basarak dosyaları listeleyin, ardından **Start Installation** ile kurulumu başlatın.
-
-*(İsteğe bağlı: Yerel dosyanız yoksa **Winget Armory** sekmesine geçerek popüler program paketlerini internet üzerinden tek tıkla kurabilirsiniz.)*
+1. **`Install_or_Not.exe`** dosyasını [**Releases**](https://github.com/Uwedwa/install-or-not/releases) sayfasından indirin.
+2. `Install_or_Not.exe` dosyasını kendi klasörüne (örneğin Masaüstüne veya bir USB belleğe) yerleştirin.
+3. Sağ tıklayıp **Yönetici Olarak Çalıştır**'ı seçin (DISM sürücü işlemleri ve katılımsız kurulumlar için gereklidir).
+4. `.exe` ve `.msi` kurulum dosyalarınızı otomatik açılan `installers/` klasörüne kopyalayın.
+5. **Engage Deployment (All Packages)** butonuna tıklayın.
 
 ---
 
-### Yöntem 2: Kaynak Koddan Çalıştırma (Python)
+### Yöntem 2: Kaynak Koddan Çalıştırma
 
 Windows 10/11 üzerinde **Python 3.10+** gerektirir.
 
 ```powershell
-# 1. Depoyu klonlayın
+# 1. Repoyu klonlayın
 git clone https://github.com/Uwedwa/install-or-not.git
 cd install-or-not
 
@@ -102,47 +212,53 @@ python install_or_not.py
 
 ---
 
-## Kaynak Koddan (.exe) Derleme
+## Tek Dosya (.exe) Olarak Derleme
 
-Kendi bağımsız çalıştırılabilir dosyanızı derlemek için:
+Tüm web varlıklarını ve modülleri tek bir taşınabilir `.exe` haline getirmek için:
 
 ```powershell
-pip install pyinstaller pillow
-python -m PyInstaller --noconfirm --onefile --windowed `
-  --name "Install_or_Not" `
-  --collect-all core `
-  install_or_not.py
+pip install pyinstaller pywebview pillow
+python -m PyInstaller --noconfirm Install_or_Not.spec
 ```
 
-Derlenen dosya `dist/Install_or_Not.exe` dizininde hazır olacaktır.
+Üretilen dosya `dist/Install_or_Not.exe` konumunda yer alacaktır.
 
 ---
 
-## Proje Yapısı
+## Proje Dizini
 
 ```
 install-or-not/
-├── install_or_not.py    # Ana kullanıcı arayüzü
+├── install_or_not.py       # Uygulama giriş noktası (PyWebView Pencere Başlatıcı)
+├── app_api.py              # Çift yönlü Python-JS Taktik Köprüsü
+├── Install_or_Not.spec     # PyInstaller tek dosya derleme tanımlayıcısı
+├── app_icon.ico            # Uygulama simgesi
 ├── core/
-│   ├── __init__.py          # Çekirdek modül tanımı
-│   ├── detector.py          # PE ikili başlık motoru
-│   ├── drivers.py           # Sürücü Kasası (Driver Vault) motoru
-│   ├── executor.py          # Çok iş parçacıklı kuyruk ve fallback motoru
-│   ├── presets.py           # Winget profilleri ve uygulama yedekleme/geri yükleme
-│   └── winget_bootstrap.py  # LTSC uyumlu Winget yükleyicisi
-├── installers/          # Kurulum dosyaları klasörü (otomatik oluşturulur)
-├── requirements.txt     # Python bağımlılıkları (Pillow)
-├── LICENSE              # GPL-3.0 lisansı
-├── README.md            # İngilizce dokümantasyon
-└── README_TR.md         # Türkçe dokümantasyon
+│   ├── __init__.py         # Paket bildirimi
+│   ├── detector.py         # PE başlık parmak izi analiz motoru
+│   ├── drivers.py          # Yerel sürücü yedekleme & geri yükleme (DISM/PnPUtil)
+│   ├── executor.py         # Çok iş parçacıklı kurulum ve GUI fallback
+│   ├── presets.py          # Winget Armory kitleri & App Vault eşitleme
+│   └── winget_bootstrap.py # LTSC uyumlu çevrimdışı/çevrimiçi Winget yükleyici
+├── ui/
+│   ├── index.html          # Cam efektli yerleşim ve sekmeler
+│   ├── style.css           # Siber taktiksel koyu stil ve animasyonlar
+│   └── app.js              # Reaktif arayüz denetleyicisi ve Web Audio sentezleyici
+├── installers/             # Kurulum dosyaları klasörü
+├── requirements.txt        # Python bağımlılıkları (pywebview, pillow)
+├── LICENSE                 # GNU GPL-3.0
+├── README.md               # İngilizce dokümantasyon
+└── README_TR.md            # Türkçe dokümantasyon
 ```
 
-## Esinlenme
+---
 
-**Install or Not** ismi ve görsel atmosferi, VOID Interactive tarafından geliştirilen taktiksel nişancı oyunu [*Ready or Not*](https://store.steampowered.com/app/1144200/Ready_or_Not/)'tan esinlenilerek tasarlanmıştır.
+## İlham ve Teşekkür
+
+**Install or Not** projesinin adı, taktiksel arayüzü ve komut dili VOID Interactive tarafından geliştirilen [*Ready or Not*](https://store.steampowered.com/app/1144200/Ready_or_Not/) oyunundan esinlenmiştir.
 
 ---
 
 ## Lisans
 
-Bu proje [GNU General Public License v3.0](LICENSE) ile lisanslanmıştır.
+Bu proje [GNU General Public License v3.0](LICENSE) altında lisanslanmıştır.
