@@ -1,4 +1,4 @@
-﻿# Install or Not
+# Install or Not
 
 > Windows için akıllı, katılımsız kurulum & yazılım dağıtım orkestratörü.
 
@@ -93,7 +93,7 @@ Kullanıcıyı sıradan kurulum sihirbazlarına tıklamaktan, sessiz parametrele
 
 ---
 
-### 6. Hazır Taktik Cephanelik Setleri (Varsayılan: Floorp Browser)
+### 6. Hazır Taktik Cephanelik Setleri
 * **Ne yapar:** Format sonrası en çok ihtiyaç duyulan yazılımları tek tıkla kuran hazır kitler sunar:
   - **Floorp Browser Kiti:** Ablaze Floorp Browser (gizlilik odaklı, dikey sekmeli ve özelleştirilebilir Firefox çatalı), uBlock Origin ve temel web araçları.
   - **Geliştirici Kiti:** Visual Studio Code, Git, Python, Windows Terminal, 7-Zip.
@@ -187,7 +187,8 @@ graph TD
 > Sistemde Python veya harici kütüphane kurulu olması gerekmez.
 
 1. **`Install_or_Not.exe`** dosyasını [**Releases**](https://github.com/Uwedwa/install-or-not/releases) sayfasından indirin.
-2. `Install_or_Not.exe` dosyasını kendi klasörüne (örneğin Masaüstüne veya bir USB belleğe) yerleştirin.
+2. **Önemli:** `Install_or_Not.exe` dosyasını doğrudan Masaüstünün veya USB belleğinizin kök dizinine koymayın; **mutlaka ayrı bir klasör açarak içine yerleştirin** (örneğin Masaüstünde `Masaüstü\Kurulum\` veya USB belleğinizde `E:\Install_or_Not\` gibi).
+   * *Neden?* Uygulama ilk açıldığında bulunduğu dizinde `installers/` (paket klasörü), `drivers_backup/` (sürücü yedekleri) ve operasyon dosyaları oluşturur. Ayrı bir klasörde olması dosyaların masaüstünüze veya flash belleğinize dağılmasını önler.
 3. Sağ tıklayıp **Yönetici Olarak Çalıştır**'ı seçin (DISM sürücü işlemleri ve katılımsız kurulumlar için gereklidir).
 4. `.exe` ve `.msi` kurulum dosyalarınızı otomatik açılan `installers/` klasörüne kopyalayın.
 5. **Engage Deployment (All Packages)** butonuna tıklayın.

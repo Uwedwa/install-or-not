@@ -1,4 +1,4 @@
-﻿# Install or Not
+# Install or Not
 
 > Intelligent, unattended post-installation & software deployment orchestrator for Windows.
 
@@ -93,7 +93,7 @@ Instead of navigating repetitive setup wizards, guessing silent CLI switches, or
 
 ---
 
-### 6. Curated Tactical Armory Kits (Default: Floorp Browser)
+### 6. Curated Tactical Armory Kits
 * **What it does:** Delivers one-click preset bundles tailored for immediate post-format productivity:
   - **Floorp Browser Kit:** Ablaze Floorp Browser (privacy-focused, highly customizable Firefox fork), uBlock Origin, and web essentials.
   - **Developer Kit:** Visual Studio Code, Git, Python, Windows Terminal, 7-Zip.
@@ -187,7 +187,8 @@ graph TD
 > No Python or external dependencies required.
 
 1. Download **`Install_or_Not.exe`** from [**Releases**](https://github.com/Uwedwa/install-or-not/releases).
-2. Place `Install_or_Not.exe` in its own folder (e.g. on a USB drive or Desktop).
+2. **Important:** Do not place `Install_or_Not.exe` directly on the root of your Desktop or USB drive. **Always place it inside its own dedicated folder** (e.g. `Desktop\Install_or_Not\` or `E:\Install_or_Not\`).
+   * *Why?* Upon launching, the application automatically provisions working directories (`installers/`, `drivers_backup/`, and logs) in its current folder. A dedicated folder keeps your workspace organized and prevents file clutter.
 3. Right-click and choose **Run as Administrator** (required for DISM driver backups and silent package installations).
 4. Drop your `.exe` and `.msi` installers into the auto-created `installers/` directory.
 5. Click **Engage Deployment (All Packages)**.
